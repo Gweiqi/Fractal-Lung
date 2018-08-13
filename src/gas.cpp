@@ -4,7 +4,7 @@
 #include <fstream>
 
 // constructor
-gas::gas(controlProperties *contProp_, systemProperties *sysProp_, bool condAW, bool trumpetacinus, int sp, int wo, double gridsize, double length){
+gas::gas(controlProperties *contProp_, systemProperties *sysProp_, bool condAW, bool trumpetlobule, int sp, int wo, double gridsize, double length){
 
     contProp = contProp_;
     sysProp  = sysProp_;
@@ -19,7 +19,7 @@ gas::gas(controlProperties *contProp_, systemProperties *sysProp_, bool condAW, 
         cout << "ERROR: grid space is bigger than lenght of duct" << endl;
     }
 
-    if (trumpetacinus){
+    if (trumpetlobule){
         N = contProp->NxAcin;
     }
     else{
@@ -65,7 +65,7 @@ gas::gas(controlProperties *contProp_, systemProperties *sysProp_, bool condAW, 
             cCAW = 1.;
             dcdxCAW = 0.;
         }
-        if (trumpetacinus){
+        if (trumpetlobule){
             C     = VectorXd::Ones(N+1);
             c1A = c2A = 1.;
         }
@@ -76,7 +76,7 @@ gas::gas(controlProperties *contProp_, systemProperties *sysProp_, bool condAW, 
             cCAW = 0.;
             dcdxCAW = 0.;
         }
-        if (trumpetacinus){
+        if (trumpetlobule){
             C     = VectorXd::Zero(N+1);
             c1A = c2A = 0.;
         }
@@ -231,7 +231,7 @@ gas::gas(controlProperties *contProp_, systemProperties *sysProp_, bool condAW, 
 
     }
 
-    if (trumpetacinus){
+    if (trumpetlobule){
 
         // transport cross-section initialization
         STrd     = VectorXd::Zero(N+1);
@@ -343,7 +343,7 @@ void gas::setCrossSection(double d){
 }
 
 
-void gas::setTrumpetTransportDomain(double terminalDuctLength, double VA0){
+void gas::setTrumpetLobuleTransportDomain(double terminalDuctLength, double VLb0){
 
     double pi = 4.*atan(1.);
 
@@ -355,8 +355,8 @@ void gas::setTrumpetTransportDomain(double terminalDuctLength, double VA0){
 
     // set initial volume of dynamic and 'advective' trumpet lobule
     // the size and geometry of the 'advective' is defined using a fraction of the initial trumpet volume
-    VTr = VA0;
-    VTrd = 0.5*VA0;
+    VTr = VLb0;
+    VTrd = 0.5*VLb0;
 
     // define cross-section interaction of power law and exponential law (constraint for power law)
     x_star = 0.;
@@ -414,12 +414,12 @@ void gas::setTrumpetTransportDomain(double terminalDuctLength, double VA0){
 }
 
 
-void gas::updateTrumpetProperties(double VA){
+void gas::updateTrumpetLobuleProperties(double VLb){
 
     double pi = 4.*atan(1.);
 
     // volume
-    VTr = VA;
+    VTr = VLb;
 
     // time depending power law coefficient
     p1 = (n1+1)/pow(l,n1+1) * (VTr - pow(l, n2+1)/(n2+1)*p2 - St*l);
@@ -467,7 +467,7 @@ void gas::setDiffusionCoefficient(int opt){
 }
 
 
-void gas::updateConcentrationInTrumpetAcinus(double dt,  double cLastCondAW, double dcdxLastCondAW, double hLastCondAW){
+void gas::updateConcentrationInTrumpetLobule(double dt,  double cLastCondAW, double dcdxLastCondAW, double hLastCondAW){
 
     double pi = 4.*atan(1.);
 
@@ -549,19 +549,19 @@ void gas::updateConcentrationInTrumpetAcinus(double dt,  double cLastCondAW, dou
 
     // implement boundary conditions (no directional dependency given)
 
-    // continuity between last conductive airway and trumpet acinus
+    // continuity between last conductive airway and trumpet lobule
     LO.row(0).setZero();
     LO(0,0) = 1.;
     rhs(0) = cLastCondAW;
 
-    // smoothness between last conductive airway and trumpet acinus
+    // smoothness between last conductive airway and trumpet lobule
     /*
     LO.row(1).setZero();
     LO(1,0) = -3./(2.*h); LO(1,1) = 4./(2.*h); LO(1,2) = -1./(2.*h);
     rhs(1) = dcdxLastCondAW;
     */
 
-    // zero gradient at end of trumpet acinus
+    // zero gradient at end of trumpet lobule
     LO.row(N).setZero();
     LO(N,N) = 3.; LO(N,N-1) = -4.; LO(N,N-2) = 1.;
     rhs(N) = 0.;
@@ -597,7 +597,7 @@ void gas::updateConcentrationInTrumpetAcinus(double dt,  double cLastCondAW, dou
 }
 
 
-void gas::updateConcentrationInDuct(bool inletTrachea, bool reachedEnd, double dt,  double cin, double c1Acinus, double c2Acinus){
+void gas::updateConcentrationInDuct(bool inletTrachea, bool reachedEnd, double dt,  double cin, double c1Lobule, double c2Lobule){
 
     if (h <= 0){
         cout << "ERROR: grid spacing is not given" << endl;
@@ -794,7 +794,7 @@ void gas::updateConcentrationInDuct(bool inletTrachea, bool reachedEnd, double d
             rhs(1) -= dt*u/(2.*h)*(1.*c_Agcl1);
 
             // right b.c.
-            rhs(N) += dt*Diff/(h*h)*(1.*c1Acinus);
+            rhs(N) += dt*Diff/(h*h)*(1.*c1Lobule);
         }
 
         if (u < 0){
@@ -803,10 +803,10 @@ void gas::updateConcentrationInDuct(bool inletTrachea, bool reachedEnd, double d
             rhs(0) += dt*Diff/(h*h)*(1.*c_Dgcl);
 
             // right b.c.
-            rhs(N) += dt*Diff/(h*h)*(1.*c1Acinus);
-            rhs(N) -= dt*u/(2.*h)*(4.*c1Acinus - 1.*c2Acinus);
+            rhs(N) += dt*Diff/(h*h)*(1.*c1Lobule);
+            rhs(N) -= dt*u/(2.*h)*(4.*c1Lobule - 1.*c2Lobule);
 
-            rhs(N-1) -= dt*u/(2.*h)*(-1.*c1Acinus);
+            rhs(N-1) -= dt*u/(2.*h)*(-1.*c1Lobule);
         }
     }
 

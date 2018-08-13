@@ -3,7 +3,7 @@
 
 #include "flDriver.h"
 #include "duct.h"
-#include "acinus.h"
+#include "lobule.h"
 #include "gas.h"
 #include "IOdict.h"
 #include "visit_writer.h"
@@ -31,13 +31,13 @@ public:
     transportProperties *transProp;
 
     // flag for trumpet lobule scaling
-    bool scalingTL;
+    bool scalingLbL;
 
     // option for LPM boundary conditions (0: inlet flow rate. 1: pleural pressure)
     int bc;
 
-    /// Maximum number of generation in the acinus
-    int maxGenTrumpAcin;
+    /// Maximum number of generation in the lobule
+    int maxGenTrumpLob;
 
     /// Number of breath
     int nbrBreaths;
@@ -57,8 +57,8 @@ public:
     /// Maximum Generation
     int endDuctMaxGen;
 
-    /// Number of acini
-    int nbrAcini, nbrAciniRed;
+    /// Number of lobules
+    int nbrLobules, nbrLobulesRed;
 
     /// Number of lines in modification table
     int nbrLinesModTab, nbrLinesTransFact;
@@ -73,8 +73,8 @@ public:
     int NgS, NgL;
     double umin;
 
-    /// total number of grid points for data storage. Duct nodes; Duct zones; Acinus nodes; Acinus zones
-    int NntotD, NztotD, NntotA, NztotA;
+    /// total number of grid points for data storage. Duct nodes; Duct zones; Lobule nodes; Lobule zones
+    int NntotD, NztotD, NntotLb, NztotLb;
 
     // locatin of maximum required time step refinement
     int indAbs_Nt, gen_Nt;
@@ -103,11 +103,11 @@ public:
     /// Asymmetry parameters
     double r, eta;
 
-    double kappaA[2];
+    double kappaLb[2];
     double kappaH;
     double kappaV;
 
-    /// Trumpet acinus grow rate
+    /// Trumpet lobule grow rate
     double kappa, kappa_hat;
 
     /// Time integration parameters
@@ -137,14 +137,14 @@ public:
     /// total airway volume
     double TAWV;
 
-    /// Total acinus volume
-    double TAV, TAV_aft_mod;
+    /// Total lobule volume
+    double TLbV, TLbV_aft_mod;
 
     /// Total residual volume (has to equal FRC)
     double TRLV;
 
-    /// Total reduced acinus volume (due to modifications)
-    double TAVRed;
+    /// Total reduced lobule volume (due to modifications)
+    double TLbVRed;
 
     /// Functional residual capacity; tidal volume; breath period
     double FRC;
@@ -164,16 +164,16 @@ public:
     /// Matrix for tidal volume and breath length
     MatrixXd TBTV;
 
-    /// Total acinus scaling
+    /// Total lobule scaling
     double totalCompScaling;
 
-    /// Acinus template root
-    acinus* pATroot;
+    /// Lobule template root
+    lobule* pLbTroot;
 
-    /// Volume of acinus template
-    double VAAT;
+    /// Volume of lobule template
+    double VLbT;
 
-    /// Elasticity of acinus
+    /// Elasticity of lobule
     double E;
 
     // for visualization
@@ -199,7 +199,7 @@ public:
     double d_min, d_max, TB_min, TB_max;
     MatrixXd transFact, transFactDomainD, transFactDomainTB;
 
-    /// Table with modification values for ducts and acini
+    /// Table with modification values for ducts and lobules
     MatrixXd modTable;
 
     /// Pleural pressure
@@ -215,7 +215,7 @@ public:
 
     float* pCoordinatesD;
 
-    float* pNodalAbsIndD;
+    float* pNodalLbbsIndD;
     float* pZonalVelocityD;
     float* pNodalPressureD;
     float* pNodalConcentrationID;
@@ -232,29 +232,29 @@ public:
 
     int firstNodeIndD, firstZoneIndD, firstCoordIndD, firstConnIndD;
 
-    // Trumpet acinus
-    int* pZoneTypesA;
-    int* pConnectivityA;
+    // Trumpet lobule
+    int* pZoneTypesLb;
+    int* pConnectivityLb;
 
-    float* pCoordinatesA;
+    float* pCoordinatesLb;
 
-    float* pNodalAbsIndA;
-    float* pNodalVelocityA;
-    float* pNodalConcentrationIA;
-    float* pNodalConcentrationIIA;
-    float* pNodalRadiusA;
-    float*  isModifiedA;
-    float* pNodalAcinusVolumeA;
-    float* pNodalPleuralPressureA;
+    float* pNodalLbbsIndLb;
+    float* pNodalVelocityLb;
+    float* pNodalConcentrationILb;
+    float* pNodalConcentrationIILb;
+    float* pNodalRadiusLb;
+    float*  isModifiedLb;
+    float* pNodalLbcinusVolumeLb;
+    float* pNodalPleuralPressureLb;
 
-    int NvarA;
-    int* pDimVarA;
-    int* pCenteringA;
-    const char** pVarnamesA;
+    int NvarLb;
+    int* pDimVarLb;
+    int* pCenteringLb;
+    const char** pVarnamesLb;
 
-    float** pAllOutputVariablesA;
+    float** pAllOutputVariablesLb;
 
-    int firstNodeIndA, firstZoneIndA, firstCoordIndA, firstConnIndA;
+    int firstNodeIndLb, firstZoneIndLb, firstCoordIndLb, firstConnIndLb;
 
 
     // Member functions
@@ -275,18 +275,18 @@ public:
     /// Calculate conducting airway volume
     void airwayVolume(duct* parentDuct);
 
-    /// Size acini to match FRC
-    void sizeAcinusTemplate();
+    /// Size lobules to match FRC
+    void sizeLobuleTemplate();
 
-    /// Attach acini class to end ducts
-    void genTrumpetAcinusOnAirways(duct* parentDuct);
+    /// Attach lobules class to end ducts
+    void genTrumpetLobuleOnAirways(duct* parentDuct);
 
     ///
-    void acinusVolumeNResistance(duct* parentDuct);
+    void lobuleVolumeNResistance(duct* parentDuct);
 
-	  void calculateStiffnessParametersInTrumpetAcinus(duct* parentDuct);
+	  void calculateStiffnessParametersInTrumpetLobule(duct* parentDuct);
 
-    /// Set gas class in ducts and acini
+    /// Set gas class in ducts and lobules
     void setupGaseousSpecies(duct* parentDuct);
 
     /// Compute time step refinement in order to satisfy CFL condition in each element
@@ -316,7 +316,7 @@ public:
     /// Read modification table from file
     void readModifications();
 
-    /// Apply modifications in ducts and acini
+    /// Apply modifications in ducts and lobules
     void applyModifications(duct* parentDuct);
 
     /// Correct volume after modification
@@ -345,17 +345,17 @@ public:
     /// Estimate flow to scale spatial resolution (CFL condition)
     void estimateFlow(duct* parentDuct);
 
-    /// Update condition in acinus
-    void updateAcinus(duct* parentDuct);
+    /// Update condition in lobule
+    void updateLobule(duct* parentDuct);
 
-    /// Integrate advection diffusion equation in ducts and acini
+    /// Integrate advection diffusion equation in ducts and lobules
     void updateConcentrationInDucts(duct* parentDuct);
 
-    /// Estimate resistance in acini
-    void computeTrumpetAcinusResistance(double d0, double l0, acinus* trumpetAcinus);
+    /// Estimate resistance in lobules
+    void computeTrumpetLobuleResistance(double d0, double l0, lobule* trumpetLobule);
 
-    /// Collect output data in acini for vtk output
-    void collectAllOutputDataInTrumpetAcinus(duct* parentDuct);
+    /// Collect output data in lobules for vtk output
+    void collectAllOutputDataInTrumpetLobule(duct* parentDuct);
 
     /// Collect output data in ducts for vtk output
     void collectAllOutputData(duct* parentDuct);

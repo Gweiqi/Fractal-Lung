@@ -1,5 +1,5 @@
-#ifndef ____acinus__
-#define ____acinus__
+#ifndef ____lobule__
+#define ____lobule__
 
 #include "gas.h"
 //#include "duct.h"
@@ -11,8 +11,8 @@
 using namespace std;
 
 
-/// Acinus
-class acinus{
+/// Lobule
+class lobule{
 
 public:
 
@@ -27,8 +27,8 @@ public:
     /// Pointer on transport properties
     transportProperties *transProp;
 
-    /// Absolut index of trumpet acinus
-    int indAbsAcin;
+    /// Absolut index of trumpet lobule
+    int indAbsLob;
 
     /// Stretch distribution
     double phi_dV;
@@ -36,10 +36,10 @@ public:
     /// Strech range
     double dP, dV;
 
-    /// Elasticity of acinus
+    /// Elasticity of lobule
     double E;
 
-    /// Resistance of acinus
+    /// Resistance of lobule
     double Racin;
 
     /// Non-linear stiffness parameter
@@ -51,19 +51,19 @@ public:
     /// Inlet diameter
     double d;
 
-    /// Length of trumpet acinus
-    double lA;
+    /// Length of trumpet lobule
+    double lLb;
 
-    /// Length of last conductive airway (lAm_fac from system properties, lt from scaling with true terminal duct)
-    double lAm_fac, lt;
+    /// Length of last conductive airway (lLbm_fac from system properties, lt from scaling with true terminal duct)
+    double lLbm_fac, lt;
 
-    /// Scaling parameter for length of trumpet acinus
+    /// Scaling parameter for length of trumpet lobule
     double lambda;
 
-    /// Homothety rate of trumpet acinus
+    /// Homothety rate of trumpet lobule
     double kappa_hat;
 
-    /// Grow rate of trumpet acinus
+    /// Grow rate of trumpet lobule
     double kappa;
 
     /// flow factor in V-structure
@@ -72,11 +72,11 @@ public:
     /// limes for z (gen) -> inf of cummulative length
     double L;
 
-    /// Volume of acinus, volume ratio (V-structure), relative volume
-    double VA, r, Vtilde;
+    /// Volume of lobule, volume ratio (V-structure), relative volume
+    double VLb, r, Vtilde;
 
-    /// Initial volume of trumpet acinus
-    double VA0;
+    /// Initial volume of trumpet lobule
+    double VLb0;
 
     /// Total alveolated cell volume
     double tACV;
@@ -110,40 +110,40 @@ public:
 
     // MEMBER FUNCTIONS
     //**********************************************************/
-    /// Constructor of acinus
-    acinus(controlProperties *contProp, systemProperties *sysProp, transportProperties *transProp);
+    /// Constructor of lobule
+    lobule(controlProperties *contProp, systemProperties *sysProp, transportProperties *transProp);
 
-    ~acinus();
+    ~lobule();
 
-    /// Set the absolute acinus index
-    void setAcinusAbsIndex(int nbrAcini);
+    /// Set the absolute lobule index
+    void setLobuleAbsIndex(int nbrLobules);
 
-    /// Return the absolute acinus index
-    int getAcinusAbsIndex();
+    /// Return the absolute lobule index
+    int getLobuleAbsIndex();
 
-    /// Add a class gas species in trumpet acinus
-    void addSpeciesInTrumpet(int sp, int wo, double terminalDuctGridSize);
+    /// Add a class gas species in trumpet lobule
+    void addSpeciesInTrumpetLobule(int sp, int wo, double terminalDuctGridSize);
 
     /// Set the length of the trumpet
-    void setTrumpetLength(bool scalingTL, double scaleTL);
+    void setTrumpetLobuleLength(bool scalingLbL, double scaleLbL);
 
-    /// Calculate the acinus volume
-    double getAcinusVolume();
+    /// Calculate the lobule volume
+    double getLobuleVolume();
 
     /// Calculate the volume distribution of the acini
-	  void calculateStretchDistribution(int nbrAcini);
+	  void calculateStretchDistribution(int nbrLobules);
 
-	  /// Set elasticity for the acinus
-    void calculateStiffnessParameters(int nbrAcini, double TV);
+	  /// Set elasticity for the lobule
+    void calculateStiffnessParameters(int nbrLobules, double TV);
 
-    /// Set the volume ratio between input flux and acinus volume
+    /// Set the volume ratio between input flux and lobule volume
     void setVolumeRatio(double dt, double Flux);
 
     /// Return volume ratio
     double getVolumeRatio();
 
-    /// Update flow properties in the trumpet acinus
-    void updateTrumpetAcinus(int wo, double dt, double Flow);
+    /// Update flow properties in the trumpet lobule
+    void updateTrumpetLobule(int wo, double dt, double Flow);
 
     /// Set shape parameter for non-linear model
     double findGamma(double g_0, double deltaP, double deltaV, double deltaP_tilde, double deltaV_tilde);
@@ -151,4 +151,4 @@ public:
 };
 
 
-#endif /* defined(____acinus__) */
+#endif /* defined(____lobule__) */

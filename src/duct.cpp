@@ -37,7 +37,7 @@ duct::duct(controlProperties *contProp_, systemProperties *sysProp_, transportPr
     bilinIntM = MatrixXd::Zero(4,4);
 
     pParent = pMinorDaughter = pMajorDaughter = 0;
-    pAcinus = 0;
+    pLobule = 0;
     pSpecies0 = pSpecies1 = 0;
 
 
@@ -49,7 +49,7 @@ duct::~duct(){
     // delete pMinorDaughter;
     // delete pMajorDaughter;
 
-    // delete pAcinus;
+    // delete pLobule;
 }
 
 
@@ -250,33 +250,33 @@ double duct::getDuctVolume(){
 }
 
 
-// Connect acinus to duct
+// Connect lobule to duct
 //**************************************************************/
-void duct::connectAcinus(bool scalingTL, acinus* pAT){
+void duct::connectLobule(bool scalingLbL, lobule* pLbT){
 
-    // Create root acinus compartment and size with diameter
-    acinus* rootAcinus = new acinus(contProp, sysProp, transProp);
+    // Create root lobule compartment and size with diameter
+    lobule* rootLobule = new lobule(contProp, sysProp, transProp);
 
     // Initialize from template
-    // Set acinus volume
-    if (scalingTL){
-        rootAcinus->VA0 = pAT->VA0*pow(lc,1);
-        rootAcinus->VA  = pAT->VA0*pow(lc,1);
+    // Set lobule volume
+    if (scalingLbL){
+        rootLobule->VLb0 = pLbT->VLb0*pow(lc,1);
+        rootLobule->VLb  = pLbT->VLb0*pow(lc,1);
     }
     else{
-        rootAcinus->VA0 = pAT->VA0;
-        rootAcinus->VA  = pAT->VA0;
+        rootLobule->VLb0 = pLbT->VLb0;
+        rootLobule->VLb  = pLbT->VLb0;
     }
 
-    // Set diameter of acinus
-    rootAcinus->d   = d;
+    // Set diameter of lobule
+    rootLobule->d   = d;
 
     // Relate with feeding duct
-    pAcinus = rootAcinus;
+    pLobule = rootLobule;
 }
 
 
-// Set index of acinus
+// Set index of lobule
 //**************************************************************/
 void duct::setDuctAbsIndex(int nbrDucts){
 
@@ -288,7 +288,7 @@ void duct::setDuctAbsIndex(int nbrDucts){
 }
 
 
-// Return index of acinus
+// Return index of lobule
 //**************************************************************/
 int duct::getDuctAbsIndex(){
 
@@ -387,24 +387,24 @@ void duct::setK1(double dt){
 
     // Declarations
     double E, Racin;
-    double VA, VA0, Vstar;
+    double VLb, VLb0, Vstar;
     double dP, dV, gamma, beta, theta;
 
-    // Get material law coefficients and Resistance of acinus
-    E = pAcinus->E;
-    Racin = pAcinus->Racin;
-    gamma = pAcinus->gamma;
+    // Get material law coefficients and Resistance of lobule
+    E = pLobule->E;
+    Racin = pLobule->Racin;
+    gamma = pLobule->gamma;
 
-    // Get acinus stretch
-  	dP = pAcinus->dP;
-  	dV = pAcinus->dV;
+    // Get lobule stretch
+  	dP = pLobule->dP;
+  	dV = pLobule->dV;
 
     if (E <= 0){
-        cout << "MISSING VALUE: elasticity of acinus not given" << endl;
+        cout << "MISSING VALUE: elasticity of lobule not given" << endl;
     }
 
     if (Racin <= 0){
-        cout << "MISSING VALUE: resistance of acinus not given" << endl;
+        cout << "MISSING VALUE: resistance of lobule not given" << endl;
     }
     if (dP <= 0){
         cout << "MISSING VALUE: pressure stretch not given" << endl;
@@ -415,15 +415,15 @@ void duct::setK1(double dt){
     }
 
     // get volumes
-    VA  = pAcinus->VA;
-    VA0 = pAcinus->VA0;
+    VLb  = pLobule->VLb;
+    VLb0 = pLobule->VLb0;
 
     // non-linear constitutive law
-    beta = dP/(exp(gamma*(VA0 + dV)) - exp(gamma*VA0));
+    beta = dP/(exp(gamma*(VLb0 + dV)) - exp(gamma*VLb0));
 
     theta = 0.8;
 
-    Vstar = VA + dt*Q;
+    Vstar = VLb + dt*Q;
     K1 = (Racin*T + theta*dt*T*beta*gamma*exp(gamma*Vstar));
 }
 
@@ -437,25 +437,25 @@ void duct::setK2(int bc, int nbrEndDucts, double TV, double dt, double varinp){
 
     // declarations
     double E, Racin;
-    double VA, VA0, Vstar;
+    double VLb, VLb0, Vstar;
     double dP, dV, gamma, beta, theta;
     double pm1, pPm1;
 
-    // get material law coefficients and Resistance of acinus
-    E = pAcinus->E;
-    Racin = pAcinus->Racin;
-    gamma = pAcinus->gamma;
+    // get material law coefficients and Resistance of lobule
+    E = pLobule->E;
+    Racin = pLobule->Racin;
+    gamma = pLobule->gamma;
 
-    // get acinus stretch
-  	dP = pAcinus->dP;
-  	dV = pAcinus->dV;
+    // get lobule stretch
+  	dP = pLobule->dP;
+  	dV = pLobule->dV;
 
     if (E <= 0){
-        cout << "MISSING VALUE: elasticity of acinus not given" << endl;
+        cout << "MISSING VALUE: elasticity of lobule not given" << endl;
     }
 
     if (Racin <= 0){
-        cout << "MISSING VALUE: resistance of acinus not given" << endl;
+        cout << "MISSING VALUE: resistance of lobule not given" << endl;
     }
     if (dP <= 0){
         cout << "MISSING VALUE: pressure stretch not given" << endl;
@@ -466,19 +466,19 @@ void duct::setK2(int bc, int nbrEndDucts, double TV, double dt, double varinp){
     }
 
     // get volumes
-    VA  = pAcinus->VA;
-    VA0 = pAcinus->VA0;
+    VLb  = pLobule->VLb;
+    VLb0 = pLobule->VLb0;
 
     // old pressure values are current pressure values
     pPm1 = pParent->p;
     pm1  = p;
 
     // non linear constitutive law
-    beta = dP/(exp(gamma*(VA0 + dV)) - exp(gamma*VA0));
+    beta = dP/(exp(gamma*(VLb0 + dV)) - exp(gamma*VLb0));
 
     theta = 0.8;
 
-    Vstar = VA + dt*Q;
+    Vstar = VLb + dt*Q;
     if (bc==0){
         K2 = (1. + Racin*T)*pm1 - Racin*T*pPm1    - varinp + (1.-theta)*dt*T*gamma*beta*exp(gamma*Vstar)*(pPm1 - pm1);
     }
@@ -619,7 +619,7 @@ void duct::writeRHS(int bc, int nbrEndDucts, double TV, double dt, double patm, 
 
     // For end ducts
     else if (endCAW){
-        // boundary condition: flux into acinus compartment
+        // boundary condition: flux into lobule compartment
         setK2(bc, nbrEndDucts, TV, dt, varinp);
 
         if (bc==0){ // inlet flow boundary conditions

@@ -1,7 +1,7 @@
 #ifndef ____duct__
 #define ____duct__
 
-#include "acinus.h"
+#include "lobule.h"
 #include "gas.h"
 #include "dataStruct.h"
 
@@ -51,7 +51,7 @@ public:
     /// Volume of duct
     double VD;
 
-    /// Scaling for acinus volume (only in terminal duct)
+    /// Scaling for lobules volume (only in terminal duct)
     double scal;
 
     // Visualization
@@ -69,8 +69,8 @@ public:
     /// Pointer on major daughter duct
     duct* pMajorDaughter;
 
-    /// Pointer on acinus compartment
-    acinus* pAcinus;
+    /// Pointer on lobules compartment
+    lobule* pLobule;
 
     /// Pointer on gas species 1
     gas* pSpecies0;
@@ -141,8 +141,8 @@ public:
     /// Return duct volume
     double getDuctVolume();
 
-    /// Connect acinus class to end duct
-    void connectAcinus(bool scalingTL, acinus* pAT);
+    /// Connect lobules class to end duct
+    void connectLobule(bool scalingLbL, lobule* pLbT);
 
     /// Set the absolute index of duct
     void setDuctAbsIndex(int nbrDucts);

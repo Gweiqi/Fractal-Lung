@@ -1,0 +1,75 @@
+% ================================================
+% This is a \LaTeX\ Input File
+% ------------------------------------------------
+% File Name: doc.tex
+% Version:   1.0
+% Root File: ---
+% Author:    David Hasler
+% Date:      2018-08-12
+% Institute: Inselspital, Pädiatrische Pneumologie
+% ------------------------------------------------
+% Description:
+% Root file which has to compiled with PDFLaTeX.
+%
+% ================================================
+
+
+
+
+
+% DOCUMENT CLASS  ================================
+\documentclass[11pt,a4paper,twoside, openright]{report}        % document class
+
+
+% ENCODING =======================================
+\usepackage[utf8]{inputenc}                         % unicode input encoding
+
+
+% INDICATIONS ====================================
+\input{indications}                                 % indications
+
+
+% STYLE TEMPLATES ================================
+\usepackage{reportMain}                             % main style template
+\usepackage{reportUser}                             % user defined style template
+
+
+\begin{document}
+
+% FRONT ====================================
+\pagestyle{empty}
+\input{titlepage}\cleardoublepage                   % title page
+
+
+% INTRODUCTION ====================================
+\pagenumbering{roman}
+  \tableofcontents                                  % table of contents
+  \include{nomenclature}                            % nomenclature
+  \cleardoublepage
+\pagenumbering{arabic}
+
+% Paragraphs --------------------------------------
+%\setlength{\parskip}{1em}                          % set one line break between paragraphs
+
+% MAIN PART ======================================
+\pagestyle{headings}
+%\onehalfspacing
+\include{chapters/introduction}
+\include{chapters/model_description}
+\include{chapters/application}
+%\singlespacing
+
+% APPENDIX =======================================
+\begin{appendix}
+  %\onehalfspacing
+  \include{appendix/appendixA}
+  %\singlespacing
+\end{appendix}
+
+
+% LISTS ==========================================
+\listoffigures                                      % list of figures
+\listoftables                                       % list of tables
+\bibliography{bibliography}                         % references
+
+\end{document}

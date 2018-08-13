@@ -1,7 +1,7 @@
 #include "flDriver.h"
 #include "lung.h"
 #include "duct.h"
-#include "acinus.h"
+#include "lobule.h"
 #include "gas.h"
 #include "IOdict.h"
 #include "dataStruct.h"
@@ -21,13 +21,6 @@ using namespace Eigen;
 
 
 
-/// \file Driver function to run simulation
-/// \param initData Contains all data of the lung input file
-/// \param allbreathFlow Contains flow data of all breaths
-/// \param controlProperties Control properties for simulation handle
-/// \param systemProperties Properties of the fractal lung model and the trumpet acini
-/// \param transportProperties  Transport properties (Diffusion coefficient, viscosity, density)
-/// \return -
 //**************************************************************/
 void driver(init initData, breathFlow* allBreathFlow, breathResults* allBreathResults,
             controlProperties contProp, systemProperties sysProp, transportProperties transProp){
@@ -61,16 +54,16 @@ void driver(init initData, breathFlow* allBreathFlow, breathResults* allBreathRe
     cout<<std::left<<setw(20) << "# end ducts" << " = " << LUNG.nbrEndDucts << endl;
     cout<<std::left<<setw(20) << "min/max generation" << " = " << LUNG.endDuctMinGen << "/" << LUNG.endDuctMaxGen << endl;
 
-    // Size acinus template to match FRC and TAWV+TAV
-    LUNG.sizeAcinusTemplate();
+    // Size lobule template to match FRC and TAWV+TLbV
+    LUNG.sizeLobuleTemplate();
 
-    // Generate properly scaled acini
-    LUNG.genTrumpetAcinusOnAirways(LUNG.pTrachea);
+    // Generate properly scaled lobules
+    LUNG.genTrumpetLobuleOnAirways(LUNG.pTrachea);
 
-    // Compute total acinus volume and acinus total resistance
-    LUNG.acinusVolumeNResistance(LUNG.pTrachea);
-    cout<<std::left<<setw(20) <<"FRC residual = " << abs(LUNG.TAWV+LUNG.TAV - LUNG.FRC) << endl;
-    cout<<std::left<<setw(20) <<"TAV / FRC    = " << abs(LUNG.TAV)/abs(LUNG.TAWV+LUNG.TAV) << endl;
+    // Compute total lobule volume and lobule total resistance
+    LUNG.lobuleVolumeNResistance(LUNG.pTrachea);
+    cout<<std::left<<setw(20) <<"FRC residual = " << abs(LUNG.TAWV+LUNG.TLbV - LUNG.FRC) << endl;
+    cout<<std::left<<setw(20) <<"TLbV / FRC    = " << abs(LUNG.TLbV)/abs(LUNG.TAWV+LUNG.TLbV) << endl;
 
     cout << "\n\nRead files ..." << endl;
     // Read breath periods and tidal volume corresponding to measured flow signal
@@ -97,10 +90,10 @@ void driver(init initData, breathFlow* allBreathFlow, breathResults* allBreathRe
     cout << "\n\nModification table:"<< endl;
     cout << "*******************************" << endl;
     cout << LUNG.modTable << "\n" << endl;
-    cout << "Lobular volume ratio pre / post modifications: " << LUNG.TAV/LUNG.TAV_aft_mod << endl;
+    cout << "Lobular volume ratio pre / post modifications: " << LUNG.TLbV/LUNG.TLbV_aft_mod << endl;
 
-    // Calculate trumpet acinus stiffness
-	  LUNG.calculateStiffnessParametersInTrumpetAcinus(LUNG.pTrachea);
+    // Calculate trumpet lobule stiffness
+	  LUNG.calculateStiffnessParametersInTrumpetLobule(LUNG.pTrachea);
 
     // Initialize matrices and vectors for liner system for pressure
     LUNG.initializeMat();
@@ -155,7 +148,7 @@ void driver(init initData, breathFlow* allBreathFlow, breathResults* allBreathRe
         LUNG.Nt = 1.0; //re-initialize
         LUNG.computeTimeStepRefinement(LUNG.pTrachea, 1);
 
-        // Sub time stepping to update acini and ducts
+        // Sub time stepping to update lobules and ducts
         for (int n = 0; n<LUNG.Nt; n++){
 
             // Update entries in coefficient matrix
@@ -181,8 +174,8 @@ void driver(init initData, breathFlow* allBreathFlow, breathResults* allBreathRe
             LUNG.Qouttot *= 0.;
             LUNG.computeFlow(LUNG.pTrachea);
 
-            // Update flow properties in breathing acinus
-            LUNG.updateAcinus(LUNG.pTrachea);
+            // Update flow properties in breathing lobule
+            LUNG.updateLobule(LUNG.pTrachea);
 
             // Solve transport equation for one time-step (Crank-Nicolson)
             LUNG.updateConcentrationInDucts(LUNG.pTrachea);

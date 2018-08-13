@@ -35,7 +35,7 @@ struct breathFlow{
 };
 
 
-/// Struct containing conducting airway and acini properties
+/// Struct containing conducting airway and lobules properties
 //**************************************************************/
 struct systemProperties{
     double cin;             // Inlet concentration
@@ -44,14 +44,14 @@ struct systemProperties{
     double r;               // Bifurcation parameter
     double eta;             // Bifurcation parameter
     double kappa;           // Homothety in trumpet lobule
-    int    maxGenAc;        // Number of generation in Acini
-    double lAm_fac;         // mean trumpet lobule length factor
+    int    maxGenLb;        // Number of generation in Lobules
+    double lLbm_fac;        // mean trumpet lobule length factor
     double bending;         // bending of non-linear constitutive law for trumpet
     double n1,n2;           // Exponents used in power law for trumpet lobule
     double z_star;          // generation at which model cross-section intersects with exponential growth
     double R_fac;           // Magnification factor for total lobular resistance
     double Diff_fac;        // Modification factor for molecular diffusion coefficient
-    int    scalingTL;       // trumpet lobule scaling
+    int    scalingLbL;       // trumpet lobule scaling
 };
 
 
