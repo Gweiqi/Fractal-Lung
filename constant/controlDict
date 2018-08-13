@@ -1,0 +1,15 @@
+// Numerical Settings
+generalCN		0.8 	// 0 = expl.Eul, 0.5 = CrankNic., 1 = impl.Eul.
+
+NxDuctMode		1		// Scale spatial resolution in ducts with respect to CFL Condition (1 - yes, 0 - no)
+NxDuctMin		7		// (Min) Number of gridpoints for ducts
+NxDuctMax		100		// Max Number of gridpoints
+NxAcin 			28			// Number of gridpoints for acini
+
+// CFL stability criterion for species transport
+CFL 			1.0			// CFL number
+
+// Output Settings
+fOutFull		100		// Write frequency full output
+writeFull		0 		// Full data output (1 - yes, 0 - no)
+writeRedGrid	        0		// Full data output on reduced grid (1 - yes, 0 - no)
