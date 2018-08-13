@@ -1,0 +1,252 @@
+% ================================================
+% This is a \LaTeX\ Style File
+% ------------------------------------------------
+% File Name: reportARTORG.sty
+% Root File: doc.tex
+% Author:    David Hasler, Mario Weder
+% Date:      2018-08-02
+% Institute: Inselspital, Pädiatrische Pneumologie
+% ------------------------------------------------
+% Description:
+% Style file with all packages, format definition
+% and macros.
+%
+% ================================================
+
+
+% PACKAGES =======================================
+
+% Language ---------------------------------------
+\usepackage[english]{babel}                         % english text
+
+% Font control -----------------------------------
+\usepackage{sectsty}
+
+% Mathematics ------------------------------------
+\usepackage{amsmath}                                % mathematics (centered equations)
+\usepackage{amssymb}                                % mathematical symbols
+\usepackage{mathtools}                              % math extension
+%\usepackage{mathptmx}                              % math typeface going wiht 'Times New Roman'
+%\usepackage[charter]{mathdesign}                    % math typeface going wiht 'Charter'
+\usepackage{euler}                                  % ams euler font for math
+%\usepackage{fouriernc}                              % math font that goes with new century school book
+\usepackage{cancel}                                 % to show a canceled term in a equation
+
+% Page Format ------------------------------------
+%\usepackage{geometry}                      % takes care of b5 page format
+\usepackage{fullpage}
+\usepackage{lscape}                                 % landscape
+
+% Text Format ------------------------------------
+\usepackage[normalem]{ulem}                         % underline
+\usepackage[usenames,dvipsnames]{color}             % color capability
+\usepackage{xcolor}                                 % additional colors
+\usepackage{enumitem}                               % items in enumerate
+
+% Figures and Tables -----------------------------
+\usepackage[nottoc]{tocbibind}                      % add to table of contents
+\usepackage[small,hang,bf]{caption}                       % captions for figures and tables
+\usepackage{ftcap}                                  % caption margins
+\usepackage[font=normalsize]{subfig}                % subfigures
+\usepackage{tabularx}                               % tables with variable column with
+\usepackage{dcolumn}                                % column alignment
+\usepackage{booktabs}                               % nice tables
+\usepackage{array}                                  % arrays
+\usepackage{longtable}                              % tables with page break
+%\usepackage{float}                                 % control figure placement
+\usepackage[rightcaption]{sidecap}                  % control figure caption placement
+
+% Graphics ---------------------------------------
+\usepackage[final]{graphicx}                        % incluce PDF figures
+\usepackage[final]{pdfpages}                        % include PDF files
+\usepackage[pdftex]{hyperref}                       % hyperlinks in PDF
+\usepackage{tikz}                                   % TikZ drawings
+\graphicspath{{figures/},{figures/ipr/},{figures/exp/ARS/},{figures/exp/TAV/},{figures/exp/SAV/}} % path to figures
+\usepackage{pgf}
+
+% Bibliography -----------------------------------
+\usepackage{natbib}                                 % author-year citations
+
+% Misc -------------------------------------------
+%\usepackage{units}                                 % units
+\usepackage{listings}                               % code listings
+\usepackage{url}                                    % web links
+\usepackage{rotating}                              % rotate figures and tables
+\usepackage{setspace}                              % rotate figures and tables
+
+% ================================================
+
+
+
+% PDF SETTINGS ===================================
+\hypersetup
+{ draft=false,
+  bookmarks=true,                                   % visible bookmarks
+  backref=section,
+  colorlinks=false,                                 % framed links
+  linkcolor=red,                                    % color of internal links
+  citecolor=blue,                                   % color of links to the bibliography
+  filecolor=magenta,                                % color of file links
+  urlcolor=cyan,                                    % color of external links
+  pagebackref=false,
+  breaklinks=true,
+  pdfpagelayout=OneColumn,
+  pdfmenubar=true,
+  pdftoolbar=true,                                  % visible toolbar
+  pdfstartview=FitH,
+  pdfstartpage=1,                                   % start page
+  pdftitle=\thetitle,                               % title
+  pdfauthor=\theauthor                              % author,
+}
+% ================================================
+
+
+
+% STYLE ==========================================
+
+% Font family ------------------------------------
+%\renewcommand{\familydefault}{\sfdefault}
+%\renewcommand*\rmdefault{bch} % main text with 'Charter' typeface
+\renewcommand*\rmdefault{cmr} % main text: cmr (default) = 'Computer Modern', ptm = 'Times New Roman', pbk = 'Bookman', pnc = 'New Century Schoolbook'
+\renewcommand*\sfdefault{pag} % sans serif default set to 'Avant Garde'
+
+
+% change title font and size
+\chapterfont{\fontfamily{pag}\selectfont\LARGE}
+\sectionfont{\fontfamily{pag}\selectfont}
+\subsectionfont{\fontfamily{pag}\selectfont}
+\subsubsectionfont{\fontfamily{pag}\selectfont\centering\textit}
+
+% Numbering --------------------------------------
+\numberwithin{equation}{chapter}                    % include chapter in equation number
+\numberwithin{figure}{chapter}                      % include chapter in figure number
+\numberwithin{table}{chapter}                       % include chapter in table number
+\newcommand{\eqnname}{Equation}
+
+% Caption ----------------------------------------
+\renewcommand{\captionfont}{\itshape\small}          % italic caption font
+\setlength{\captionmargin}{\parindent}              % caption margin
+\addto\captionsenglish{%
+  \renewcommand{\figurename}{Fig.}%                 % caption label for figures
+  \renewcommand{\tablename}{Tab.}%                  % caption label for tables
+}
+
+% Bibliography -----------------------------------
+\bibliographystyle{apalike}                         % style of references
+
+% Listings ---------------------------------------
+\lstset{
+	language=C++,							                        % use C++ as default language
+	basicstyle=\ttfamily\footnotesize,
+	identifierstyle=,
+	commentstyle=\color{black!50}\itshape,
+	stringstyle=,
+	keywordstyle=,
+	morekeywords={},
+	numbers=left,
+	numberstyle=\tiny,
+	frame=single,
+	framerule=0pt
+}
+\makeatletter
+\lst@AddToHook{TextStyle}%                          % normal size for listings in text
+{\let\lst@basicstyle\ttfamily\normalsize}
+\makeatother
+
+% ================================================
+
+
+
+% PAGE FORMAT ====================================
+
+% Typesetting ------------------------------------
+\setlength{\topmargin}{-12mm}                      % text height
+\setlength{\headsep}{15mm}                       % text height
+\setlength{\textheight}{240mm}                      % text height
+
+% Pagestyle --------------------------------------
+\pagestyle{headings}                                % pagestyle
+% ================================================
+
+
+
+% ENVIRONMENTS ===================================
+
+% Introduction -----------------------------------
+\newenvironment{introduction}%
+{ \pagestyle{plain}                                 % pagestyle
+  \pagenumbering{roman}}                            % roman page numbering in introduction
+{ \pagestyle{headings}                              % pagestyle
+  \pagenumbering{arabic}}                           % arabic page numbering in main part
+
+% Nomenclature -----------------------------------
+\newenvironment{nomenclature}[1][Nomenclature]%
+{ \markboth{\uppercase{#1}}{\uppercase{#1}}         % heading
+  \chapter*{#1}
+  \addcontentsline{toc}{chapter}{#1}
+  \addtolength{\extrarowheight}{2pt}}
+{ \addtolength{\extrarowheight}{-2pt}}
+
+\newenvironment{nomenclaturesection}[1]%            % nomenclature with two columns
+{ \begin{longtable}{@{}p{30mm} >{\raggedright\arraybackslash}p{130mm}@{}}
+  \multicolumn{2}{@{}l}{\textsf{\textbf{#1}}} \\[1ex]
+  \endfirsthead}
+{ \end{longtable}}
+
+\newenvironment{nomenclaturesection*}[1]%           % nomenclature with three columns
+{ \begin{longtable}{@{}p{30mm} >{\raggedright\arraybackslash}p{110mm} p{20mm}@{}}
+  \multicolumn{3}{@{}l}{\textsf{\textbf{#1}}} \\[1ex]
+  \endfirsthead}
+{ \end{longtable}}
+
+% Declaration -----------------------------------
+\newenvironment{declaration}[1][Declaration of Originality]%
+{ \markboth{\uppercase{#1}}{\uppercase{#1}}         % heading
+  \chapter*{#1}
+  \addcontentsline{toc}{chapter}{#1}
+  \addtolength{\extrarowheight}{7pt}}
+{ \addtolength{\extrarowheight}{-7pt}}
+
+% Declaration -----------------------------------
+\newenvironment{cv}[1][Curriculum Vitae]%
+{ \markboth{\uppercase{#1}}{\uppercase{#1}}         % heading
+  \chapter*{#1}
+  \addcontentsline{toc}{chapter}{#1}
+  \addtolength{\extrarowheight}{7pt}}
+{ \addtolength{\extrarowheight}{-7pt}}
+
+% Declaration -----------------------------------
+\newenvironment{publist}[1][List of Publications]%
+{ \markboth{\uppercase{#1}}{\uppercase{#1}}         % heading
+  \chapter*{#1}
+  \addcontentsline{toc}{chapter}{#1}
+  \addtolength{\extrarowheight}{7pt}}
+{ \addtolength{\extrarowheight}{-7pt}}
+
+% ================================================
+
+
+
+% MACROS =========================================
+
+% Web --------------------------------------------
+\def\email#1{%                                      % mail
+  \href{mailto:#1}{%
+    \expandafter\nolinkurl\expandafter{#1}%
+  }%
+}
+
+% References -------------------------------------
+\def\figref#1{\figurename~\ref{#1}}                 % reference to figure
+\def\tabref#1{\tablename~\ref{#1}}                  % reference to table
+\def\secref#1{\textsection\ref{#1}}                 % reference to section
+\def\eqnref#1{\eqnname~(\ref{#1})}                 % reference to section
+
+% Boxes ------------------------------------------
+\def\boxedpar#1{%                                    % boxed paragraph
+  \kern10pt\hbox{\kern-5.4pt\vbox{\hrule%
+  \hbox{\vrule\kern5pt\vbox{\kern5pt#1\par\kern5pt}%
+  \kern5pt\vrule}\hrule}}\kern10pt%
+}
+
+% ================================================

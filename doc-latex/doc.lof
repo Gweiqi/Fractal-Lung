@@ -1,0 +1,11 @@
+\select@language {english}
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces \relax }}{4}{figure.caption.3}
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Left, Network of duct and trumpet-like elements used for the upper and lower airways, respectively. Right, corresponding lumped parameter model composed of resistances and compliances.\relax }}{4}{figure.caption.4}
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Above: the generation $z$ plotted as function of the cumulative length or distance $x$ with $l_\mathrm {t}= d_\mathrm {t}= unity$. The solid line indicates the function described by equation (\ref {eqn:zofx}). Below: The cross-section as it follows from equation (\ref {eqn:crosssection}) (magenta) and the model (\ref {eqn:crosssectionModel}) (green) where $p_1$ and $p_2$ were defined to yield the same integral as the exponential law and intersects at generation $z^\star = 5$ ($z = 0$ at trumpet inlet).\relax }}{7}{figure.caption.7}
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Elastic pressure for a stiff (dash-dotted line), medium (solid line) and soft (dashed line) trumpet-lobule. Grey zone indicates range of transacinar pressure resulting from typical pleural pressure.\relax }}{10}{figure.caption.12}
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Reduced size network of duct-like airways and trumpet lobule at the periphery\relax }}{11}{figure.caption.15}
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Bifurcation of duct-like airways with one-dimensional grid for gas transport.\relax }}{15}{figure.caption.20}
+\addvspace {10\p@ }
+\addvspace {10\p@ }

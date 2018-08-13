@@ -1,0 +1,130 @@
+% ================================================
+% This is a \LaTeX\ Style File
+% ------------------------------------------------
+% File Name: reportUser.sty
+% Root File: report.tex
+% Author:    Mario Weder (mario.weder@student.ethz.ch)
+% Date:      2011-11-23
+% Company:   ETH Zurich
+% ------------------------------------------------
+% Description:
+% Style file with additional user specific
+% packages, format definitions and macros.
+% ================================================
+
+
+
+% PACKAGES =======================================
+
+%\usepackage[inline]{showlabels}                      % show labels inline
+%\renewcommand{\showlabelfont}{\footnotesize\ttfamily}
+
+% ================================================
+
+
+
+% STYLE ==========================================
+
+% Positioning of floating environments -----------
+\renewcommand{\bottomfraction}{0.5}
+
+% ================================================
+
+
+
+
+% PDF ============================================
+
+%\hypersetup{colorlinks=true}                          % colored links
+
+% ================================================
+
+
+
+
+
+% TIKZ ===========================================
+
+% Libraries
+%\usetikzlibrary{intersections}                      % not supported with TeTeX 2009
+%\usetikzlibrary{decorations.markings}               % not supported with Web2C 7.5.6
+\usetikzlibrary{patterns}                           % pattern library
+
+% Line styles to describe lines in caption texts
+\tikzstyle{mydashdotted}=[dash pattern=on 4\pgflinewidth off \pgflinewidth on \pgflinewidth off \pgflinewidth]
+\tikzstyle{mydashed}=[dash pattern=on 4\pgflinewidth off 4\pgflinewidth]
+\tikzstyle{mydotted}=[dash pattern=on 2\pgflinewidth off 2\pgflinewidth]
+\def\legendline#1#2#3{\protect\tikz[baseline]{\protect\draw[line width=#2,#1](0em,.5ex) -- (#3,.5ex);}}
+\def\legendbar#1{\protect\tikz[baseline]{\protect\draw (0em,0ex) -- (1em,0ex);
+  \protect\filldraw [fill=#1] (.2em,0ex) rectangle (.8em,1.2ex);}}
+\def\legendcircle#1#2{\protect\tikz[baseline]{\protect\filldraw [#2] (0em,.5ex) circle (#1);}}
+\def\legendsquare#1#2{\protect\tikz[baseline]{\protect\filldraw [#2] (0em,.5ex) +(-#1,-#1) rectangle +(#1,#1);}}
+
+% Thin arrow with larger arrow tip
+%\tikzstyle{axes}=[decoration={markings,mark=at position 1 with {\arrow[scale=2]{>}}},
+%    postaction={decorate}]
+
+% ================================================
+
+
+% TABLES =========================================
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+% ================================================
+
+% MACROS =========================================
+
+% Misc
+\def\misc{\protect\tikz[baseline]{\protect\filldraw [black!50] (0ex,0ex) rectangle (1.2ex,1.2ex);}} % placeholder
+%\def\misc{\ensuremath{{\color{black!50}\blacksquare}}} % placeholder
+\def\varmisc{\protect\tikz[baseline]{\protect\filldraw [black!50] (0ex,.6ex) circle (.6ex);}} % another placeholder
+%\def\varmisc{\ensuremath{{\color{black!50}\blacktriangle}}} % another placeholder
+\def\etal{\hbox{\textsl{et\,al.}}}                 % et alii
+
+% Math
+\DeclareMathOperator{\sgn}{sgn}                    % signum function
+\def\const{\mathrm{const}}                         % constant
+\def\d{\mathrm{d}}                                 % differential sign
+\def\v#1{\mathbf{#1}}                              % vector
+\def\hv#1{\underline{\mathbf{#1}}}                  % vector of homogenous coordinates
+\def\m#1{\mathbf{#1}}                              % matrix
+\def\tp{\mathsf{T}}                                % matrix transpose
+\def\hp{\mathsf{H}}                                % Hermitian transpose
+\def\order#1{\mathcal{O}(#1)}                      % order symbol (Landau)
+\def\i{\mathrm{i}}                                 % imaginary unit
+\def\e{\mathrm{e}}                                 % Euler constant
+\let\Real=\Re                                      % real part
+\let\Imag=\Im                                      % imaginary part
+\def\abs#1{\lvert#1\rvert}                         % absolute value
+\def\norm#1{\|#1\|}                                % norm
+\def\avg#1{\langle#1\rangle}                       % average
+\def\e{\mathrm{e}}                                 % Euler constant
+
+% Utilities
+\def\pp{\text{.}}                                  % dot after formula
+\def\cc{\text{,}}                                  % comma after formula
+\def\lb{\mathrm{lb}}                               % subscript
+\def\ter{\mathrm{t}}                               % subscript
+\def\pl{\mathrm{pl}}                               % subscript
+
+% Fluid- and thermodynamics
+\def\Rey{\mathsf{Re}}                              % Reynolds number
+\def\Pe{\mathsf{Pe}}                                % Peclet number
+\def\Wo{\mathsf{Wo}}                               % Reynolds number
+\def\Ma{\mathsf{Ma}}                               % Mach number
+\def\St{\mathsf{St}}                               % Stokes number
+
+% units
+\def\unit#1{~\mathrm{#1}}                         % for units
+
+% Tools
+\def\MATLAB{\textnormal{\textsc{Matlab}}}
+\def\Mathematica{\textrm{\textit{Mathematica}}}
+\def\ocv{\textrm{\textit{OpenCV}}}
+\def\spy{\textrm{\textit{SciPy}}}
+
+% small font size
+\def\fns#1{{\footnotesize#1}}                     % for units
+
+% ================================================
