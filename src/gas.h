@@ -45,7 +45,7 @@ public:
     int N;
     double h;
 
-    // trumpet acinus scaling and grow rate
+    // trumpet lobule scaling and grow rate
     double kappa_hat, kappa;
 
     // modification factor for molecular diffusion coefficent
@@ -60,7 +60,7 @@ public:
     // cross-sections ('St' at inlet of trumpet lobule)
     double S, St;
 
-    // volume of trumpet acinus
+    // volume of trumpet lobule
     double VTr, VTrd;
 
     // diffusion coefficient
@@ -77,7 +77,7 @@ public:
     double Sd_A, Sd_B, Sd_C;
     double fb_p, fb_maj, fb_min;
 
-    // quantities at acinus inlet
+    // quantities at lobule inlet
     double c1A, c2A, cCAW, dcdxCAW;
 
     // time integration coefficient (Crank-Nicolson)
@@ -112,7 +112,7 @@ public:
 
     VectorXd rhs;
 
-    // transport cross-section of trumpet acinus
+    // transport cross-section of trumpet lobule
     VectorXd STrd;
 
     // cross-section of trumpet lobule S = S(x,t)
@@ -121,7 +121,7 @@ public:
     // per-generation diameter of trumpet lobule
     VectorXd dTr;
 
-    // physical velocity in trumpet acinus
+    // physical velocity in trumpet lobule
     VectorXd UphTr;
 
     // finite difference and mapping operators operators
@@ -138,7 +138,7 @@ public:
     MatrixXd RO;
     MatrixXd LO;
 
-    // effective advection and diffusion in trumpet acinus
+    // effective advection and diffusion in trumpet lobule
     MatrixXd UTr;
     MatrixXd DIFFTr;
 
@@ -160,22 +160,22 @@ public:
 
     /* MEMBER FUNCTIONS
      -------------------*/
-    gas(controlProperties *contProp, systemProperties *sysProp_, bool condAW, bool trumpetacinus, int sp, int wo, double gridsize, double l);
+    gas(controlProperties *contProp, systemProperties *sysProp_, bool condAW, bool trumpetlobule, int sp, int wo, double gridsize, double l);
     ~gas();
 
     void setCrossSection(double d);
 
-    void setTrumpetTransportDomain(double terminalDuctLength, double VA0);
+    void setTrumpetLobuleTransportDomain(double terminalDuctLength, double VLb0);
 
-    void updateTrumpetProperties(double VA);
+    void updateTrumpetLobuleProperties(double VLb);
 
     void computeEffectiveDiffCoeff(double d);
 
     void setDiffusionCoefficient(int opt);
 
-    void updateConcentrationInTrumpetAcinus(double dt,  double cLastCondAW,  double dcdxLastCondAW, double hLastCondAW);
+    void updateConcentrationInTrumpetLobule(double dt,  double cLastCondAW,  double dcdxLastCondAW, double hLastCondAW);
 
-    void updateConcentrationInDuct(bool inletTrachea, bool reachedEnd, double dt,  double cin, double c1Acinus, double c2Acinus);
+    void updateConcentrationInDuct(bool inletTrachea, bool reachedEnd, double dt,  double cin, double c1Lobule, double c2Lobule);
 
     void updateOldConc();
 

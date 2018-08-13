@@ -35,12 +35,12 @@ lung::lung(init *initData, controlProperties *contProp_,
 
 
     // Set bifurcation parameters
-    maxGenTrumpAcin     = sysProp->maxGenAc;
+    maxGenTrumpLob     = sysProp->maxGenLb;
     patm                = sysProp->p0;
     r                   = sysProp->r;
     eta                 = sysProp->eta;
-    kappaA[0]           = pow((1.-r),(1./eta));
-    kappaA[1]           = pow((r),(1./eta));
+    kappaLb[0]           = pow((1.-r),(1./eta));
+    kappaLb[1]           = pow((r),(1./eta));
 
     // Set homothety ratio in the trumpet lobule (kappa_hat for cross-section)
     kappa               = sysProp->kappa;
@@ -58,7 +58,7 @@ lung::lung(init *initData, controlProperties *contProp_,
     R_fac               = sysProp->R_fac;
 
     // flag for trumpet lobule scaling
-    scalingTL           = bool(sysProp->scalingTL);
+    scalingLbL           = bool(sysProp->scalingLbL);
 
 
     // Initialize remaining variables
@@ -70,10 +70,10 @@ lung::lung(init *initData, controlProperties *contProp_,
     TBm = 0;
     E          = 1e09;
 
-    NntotD = NztotD = NntotA = NztotA = 0;
+    NntotD = NztotD = NntotLb = NztotLb = 0;
 
     firstNodeIndD = firstZoneIndD = firstCoordIndD = firstConnIndD = 0;
-    firstNodeIndA = firstZoneIndA = firstCoordIndA = firstConnIndA = 0;
+    firstNodeIndLb = firstZoneIndLb = firstCoordIndLb = firstConnIndLb = 0;
 
     umin       = 0;
 
@@ -81,10 +81,10 @@ lung::lung(init *initData, controlProperties *contProp_,
     Qin        = 0.;
     Qouttot    = 0.;
 
-    TAWV = TAV = TAV_aft_mod = TRLV = TAVRed = 0;
+    TAWV = TLbV = TLbV_aft_mod = TRLV = TLbVRed = 0;
     totalCompScaling = 0.;
     nbrEndDucts = nbrDucts = nbrEndDuctsCheck = endDuctMinGen = endDuctMinGen = 0;
-    nbrAcini = nbrAciniRed = 0;
+    nbrLobules = nbrLobulesRed = 0;
 
     // Initialize Trachea
     //**********************************************************/
@@ -112,15 +112,15 @@ lung::lung(init *initData, controlProperties *contProp_,
     pTrachea->phi  = 0;
     pTrachea->phi_z= 0;
 
-    // Initialize acinus template
+    // Initialize lobule template
     //**********************************************************/
-    pATroot = new acinus(contProp, sysProp, transProp);
+    pLbTroot = new lobule(contProp, sysProp, transProp);
 
-    // Acinus volume of template
-    VAAT = 0;
+    // Lobule volume in template
+    VLbT = 0;
 
-    // Compliance of acini
-    pATroot->E = E;
+    // Compliance of lobules
+    pLbTroot->E = E;
 
     // For visualization
     Phi[0]  = -pi*1.0/04.;
@@ -138,30 +138,30 @@ lung::~lung(){
 
     // Delete output data arrays
     delete[] pZoneTypesD;
-    delete[] pZoneTypesA;
+    delete[] pZoneTypesLb;
     delete[] pConnectivityD;
-    delete[] pConnectivityA;
+    delete[] pConnectivityLb;
 
     delete[] pCoordinatesD;
-    delete[] pCoordinatesA;
+    delete[] pCoordinatesLb;
 
     delete[] pZonalVelocityD;
-    delete[] pNodalVelocityA;
+    delete[] pNodalVelocityLb;
     delete[] pNodalPressureD;
     delete[] pNodalConcentrationID;
-    delete[] pNodalConcentrationIA;
+    delete[] pNodalConcentrationILb;
     delete[] pNodalConcentrationIID;
-    delete[] pNodalConcentrationIIA;
+    delete[] pNodalConcentrationIILb;
 
     delete[] pDimVarD;
-    delete[] pDimVarA;
+    delete[] pDimVarLb;
     delete[] pCenteringD;
-    delete[] pCenteringA;
+    delete[] pCenteringLb;
     delete[] pVarnamesD;
-    delete[] pVarnamesA;
+    delete[] pVarnamesLb;
 
     delete[] pAllOutputVariablesD;
-    delete[] pAllOutputVariablesA;
+    delete[] pAllOutputVariablesLb;
 
     // Create rubber that moves through the duct tree and deletes its branches
     duct* rubberD = new duct(contProp, sysProp, transProp);
@@ -183,13 +183,15 @@ void lung::deconstructLung(duct* parentDuct, duct* rubberD){
 
     if (rubberD->reachedEnd(dLimit)){
 
-        // Create rubber that moves through the acinus tree and delets its branches
-        acinus* rubberA = new acinus(contProp, sysProp, transProp);
+        /*
+        // Create rubber that moves through the lobule tree and delets its branches
+        lobule* rubberA = new lobule(contProp, sysProp, transProp);
 
-        // Delete trumpet acinus compartement
-        rubberA = parentDuct->pAcinus;
+        // Delete trumpet lobule compartement
+        rubberA = parentDuct->pLobule;
 
         delete rubberA;
+        */
 
         return;
     }
@@ -230,8 +232,8 @@ void lung::genMorphCondAirways(duct* parentDuct){
     }
 
     // Grow airway daughters
-    parentDuct->grow(0, kappaA, Phi);
-    parentDuct->grow(1, kappaA, Phi);
+    parentDuct->grow(0, kappaLb, Phi);
+    parentDuct->grow(1, kappaLb, Phi);
 
     // Call next generation
     genMorphCondAirways(parentDuct->pMajorDaughter);
@@ -254,7 +256,7 @@ void lung::airwayVolume(duct* parentDuct){
         // Increment total airway length
         Ltot += parentDuct->lc;
 
-        // For acinus template scaling
+        // For lobule template scaling
         totalCompScaling += pow(parentDuct->lc,1.);
 
         // Set minimum and maximum generation of end ducts
@@ -270,24 +272,24 @@ void lung::airwayVolume(duct* parentDuct){
 }
 
 
-// Size acini template
+// Size lobules template
 //**************************************************************/
-void lung::sizeAcinusTemplate(){
+void lung::sizeLobuleTemplate(){
 
     double aAT;
 
     if (TAWV <= 0.){
-        cout << "MISSING VALUE: Total airay volume not yet computed.";
+        cout << "MISSING VLbLUE: Total airay volume not yet computed.";
         return;
     }
 
     else if (nbrEndDucts <= 0){
-        cout << "MISSING VALUE: number of end ducts not yet computed.";
+        cout << "MISSING VLbLUE: number of end ducts not yet computed.";
         return;
     }
 
     else if (totalCompScaling <= 0){
-        cout << "MISSING VALUE: total compartement scaling by diameter not yet computed.";
+        cout << "MISSING VLbLUE: total compartement scaling by diameter not yet computed.";
         return;
     }
 
@@ -297,21 +299,21 @@ void lung::sizeAcinusTemplate(){
     }
 
     else if (FRC <= TAWV){
-        cout << "NON-PHYSIOLOGIGAL VALUE: FRC is smaller than TAWV";
+        cout << "NON-PHYSIOLOGIGAL VLbLUE: FRC is smaller than TAWV";
         return;
     }
 
     else{
-        // Size volume for acini
-        if (scalingTL){
-            VAAT = (FRC - TAWV)/(totalCompScaling);
+        // Size volume for lobules
+        if (scalingLbL){
+            VLbT = (FRC - TAWV)/(totalCompScaling);
         }
         else{
-            VAAT = (FRC - TAWV)/(nbrEndDucts);
+            VLbT = (FRC - TAWV)/(nbrEndDucts);
         }
 
-        // Acinus volume
-        pATroot->VA0 = VAAT;
+        // Lobule volume
+        pLbTroot->VLb0 = VLbT;
 
         // Scaling in duct
         return;
@@ -319,117 +321,117 @@ void lung::sizeAcinusTemplate(){
 }
 
 
-// Generate trumpet acini
+// Generate trumpet lobules
 //**************************************************************/
-void lung::genTrumpetAcinusOnAirways(duct* parentDuct){
+void lung::genTrumpetLobuleOnAirways(duct* parentDuct){
 
     // declarations
-    double scaleTL;
+    double scaleLbL;
 
-    // Connect acinus to end duct
+    // Connect lobule to end duct
     if (parentDuct->reachedEnd(dLimit)){
 
-        // Connect a scaled acinus compartement
-        parentDuct->connectAcinus(scalingTL, pATroot);
+        // Connect a scaled lobule compartement
+        parentDuct->connectLobule(scalingLbL, pLbTroot);
 
-        // Set absolute acinus index and increment count for number of ending duct (= number of acini)
-        parentDuct->pAcinus->setAcinusAbsIndex(nbrAcini);
-        nbrAcini++;
+        // Set absolute lobule index and increment count for number of ending duct (= number of lobules)
+        parentDuct->pLobule->setLobuleAbsIndex(nbrLobules);
+        nbrLobules++;
 
         // Define scale for last duct (used for scaling of trumpe lobule length)
-        scaleTL = (parentDuct->lc*nbrEndDucts)/Ltot;
+        scaleLbL = (parentDuct->lc*nbrEndDucts)/Ltot;
 
-        // Set trumpet acinus length
-        parentDuct->pAcinus->setTrumpetLength(scalingTL, scaleTL);
+        // Set trumpet lobule length
+        parentDuct->pLobule->setTrumpetLobuleLength(scalingLbL, scaleLbL);
 
         return;
     }
 
     // Call next generation
-    genTrumpetAcinusOnAirways(parentDuct->pMajorDaughter);
-    genTrumpetAcinusOnAirways(parentDuct->pMinorDaughter);
+    genTrumpetLobuleOnAirways(parentDuct->pMajorDaughter);
+    genTrumpetLobuleOnAirways(parentDuct->pMinorDaughter);
 
 }
 
 
-// Compute resitance of trumpet acinus
+// Compute resitance of trumpet lobule
 //**************************************************************/
-void lung::computeTrumpetAcinusResistance(double d0, double l0, acinus* trumpetAcinus){
+void lung::computeTrumpetLobuleResistance(double d0, double l0, lobule* trumpetLobule){
 
     // declarations
-    double RA, Ri, li, di;
+    double RLb, Ri, li, di;
 
-    // compute acinus resistance as sequence of parallel resistances of equal magnitude
-    RA = 0.;
-    for (int k=0; k<maxGenTrumpAcin; k++){
+    // compute lobule resistance as sequence of parallel resistances of equal magnitude
+    RLb = 0.;
+    for (int k=0; k<maxGenTrumpLob; k++){
 
         di = d0*pow(kappa,k);
         li = l0*pow(kappa,k);
 
         Ri = (8.*mu*li)/(pow(di/2,4)*pi);
 
-        RA += Ri/pow(2.,k);
+        RLb += Ri/pow(2.,k);
     }
 
     // Magnification of total lobular resistance
-    // !!! This is a pure guess and motivated by the fact that the total resistance resulting from a sequence of parallel sub-elements (as computed above) does not inclued any form factors. These may certainly play a role in the in the complex morphology of the human lung.
-    RA *= R_fac;
+    // !!! This is a guess and motivated by the fact that the total resistance resulting from a sequence of parallel sub-elements (as computed above) does not inclued any form factors. These may certainly play a role in the in the complex morphology of the human lung.
+    RLb *= R_fac;
 
-    trumpetAcinus->Racin = RA;
+    trumpetLobule->Racin = RLb;
 
 }
 
 
-// Generate trumpet acini
+// Generate trumpet lobules
 //**************************************************************/
-void lung::acinusVolumeNResistance(duct* parentDuct){
+void lung::lobuleVolumeNResistance(duct* parentDuct){
 
     // declarations
     double d0, l0;
 
-    // correct acinus volume when end duct is reached
+    // correct lobule volume when end duct is reached
     if (parentDuct->reachedEnd(dLimit)){
 
-        // set acinus resistance
+        // set lobule resistance
         d0 = parentDuct->d;
         l0 = parentDuct->l;
-        computeTrumpetAcinusResistance(d0, l0, parentDuct->pAcinus);
+        computeTrumpetLobuleResistance(d0, l0, parentDuct->pLobule);
 
-        // set acinus volume
-        //parentDuct->pAcinus->setAcinusVolume();
-        TAV += parentDuct->pAcinus->getAcinusVolume();
+        // set lobule volume
+        //parentDuct->pLobule->setLobuleVolume();
+        TLbV += parentDuct->pLobule->getLobuleVolume();
 
 
-        // calculate stretch distribution in trumpet acinus
-        parentDuct->pAcinus->calculateStretchDistribution(nbrAcini);
+        // calculate stretch distribution in trumpet lobules
+        parentDuct->pLobule->calculateStretchDistribution(nbrLobules);
 
         return;
     }
 
     // call next generation
-    acinusVolumeNResistance(parentDuct->pMajorDaughter);
-    acinusVolumeNResistance(parentDuct->pMinorDaughter);
+    lobuleVolumeNResistance(parentDuct->pMajorDaughter);
+    lobuleVolumeNResistance(parentDuct->pMinorDaughter);
 
 }
 
 
-// Calculate stiffness of Acinus
+// Calculate stiffness of Lobule
 //**************************************************************/
-void lung::calculateStiffnessParametersInTrumpetAcinus(duct* parentDuct){
+void lung::calculateStiffnessParametersInTrumpetLobule(duct* parentDuct){
 
 
-    // correct acinus volume when end duct is reached
+    // correct lobule volume when end duct is reached
     if (parentDuct->reachedEnd(dLimit)){
 
         // calculate stiffness parameter
-        parentDuct->pAcinus->calculateStiffnessParameters(nbrAcini, TVm);
+        parentDuct->pLobule->calculateStiffnessParameters(nbrLobules, TVm);
 
         return;
     }
 
     // call next generation
-    calculateStiffnessParametersInTrumpetAcinus(parentDuct->pMajorDaughter);
-    calculateStiffnessParametersInTrumpetAcinus(parentDuct->pMinorDaughter);
+    calculateStiffnessParametersInTrumpetLobule(parentDuct->pMajorDaughter);
+    calculateStiffnessParametersInTrumpetLobule(parentDuct->pMinorDaughter);
 
 }
 
@@ -450,8 +452,8 @@ void lung::setupGaseousSpecies(duct* parentDuct){
     // Anchor
     if (parentDuct->reachedEnd(dLimit)){
 
-        // Add species in acinus
-        parentDuct->pAcinus->addSpeciesInTrumpet(species, washout, gridsize);
+        // Add species in lobule
+        parentDuct->pLobule->addSpeciesInTrumpetLobule(species, washout, gridsize);
 
         // Relate ending duct before returning
         parentDuct->relateSpecies(washout);
@@ -472,7 +474,7 @@ void lung::setupGaseousSpecies(duct* parentDuct){
 void lung::computeTimeStepRefinement(duct* parentDuct, int opt){
 
     // declarations
-    double Nt_temp, Nt_temp_A, u;
+    double Nt_temp, Nt_temp_Lb, u;
 
     // select advection speed according to 'opt' argument
     if (opt == 0){
@@ -488,8 +490,8 @@ void lung::computeTimeStepRefinement(duct* parentDuct, int opt){
     // Anchor
     if (parentDuct->reachedEnd(dLimit)){
 
-        // compute needed timestep refinement in acinus (velocity is same as in terminal duct)
-        Nt_temp_A = (u * dt)/(contProp->CFL * parentDuct->pAcinus->pSpecies0->h);
+        // compute needed timestep refinement in lobules (velocity is same as in terminal duct)
+        Nt_temp_Lb = (u * dt)/(contProp->CFL * parentDuct->pLobule->pSpecies0->h);
 
         return;
     }
@@ -501,8 +503,8 @@ void lung::computeTimeStepRefinement(duct* parentDuct, int opt){
         indAbs_Nt = parentDuct->indAbs;
         gen_Nt = parentDuct->gen;
     }
-    if (Nt < Nt_temp_A){
-        Nt = ceil(Nt_temp_A);
+    if (Nt < Nt_temp_Lb){
+        Nt = ceil(Nt_temp_Lb);
     }
 
 
@@ -527,11 +529,11 @@ void lung::computeTotalNbrOfGridPoints(duct* parentDuct){
     // Anchor for end duct
     if (parentDuct->reachedEnd(dLimit)){
 
-        // gridpoints in trumpet acinus of longest airway
-        NntotA += parentDuct->pAcinus->pSpecies0->N; // nodes
-        NntotA++;
+        // gridpoints in trumpet lobules of longest airway
+        NntotLb += parentDuct->pLobule->pSpecies0->N; // nodes
+        NntotLb++;
 
-        NztotA += parentDuct->pAcinus->pSpecies0->N; // zones
+        NztotLb += parentDuct->pLobule->pSpecies0->N; // zones
 
         return;
     }
@@ -551,14 +553,14 @@ void lung::initializeVTKArrays(){
     pConnectivityD = new int[2*NztotD];
     pCoordinatesD = new float[3*NntotD];
 
-    // For trumpet acinus
-    pZoneTypesA = new int[NztotA];
-    pConnectivityA = new int[2*NztotA];
-    pCoordinatesA = new float[3*NntotA];
+    // For trumpet lobule
+    pZoneTypesLb = new int[NztotLb];
+    pConnectivityLb = new int[2*NztotLb];
+    pCoordinatesLb = new float[3*NntotLb];
 
-    /// OUTPUT VARIABLES
+    /// OUTPUT VLbRIABLES
     // For ducts
-    pNodalAbsIndD = new float[NntotD];
+    pNodalLbbsIndD = new float[NntotD];
     pZonalVelocityD = new float[NztotD];
     pNodalPressureD = new float[NntotD];
     pNodalConcentrationID = new float[NntotD];
@@ -566,17 +568,17 @@ void lung::initializeVTKArrays(){
     pNodalRadiusD = new float[NntotD];
     isModifiedD = new float[NntotD];
 
-    // For trumpet acinus
-    pNodalAbsIndA = new float[NntotA];
-    pNodalVelocityA = new float[NntotA];
-    pNodalConcentrationIA = new float[NntotA];
-    pNodalConcentrationIIA = new float[NntotA];
-    pNodalRadiusA = new float[NntotA];
-    isModifiedA = new float[NntotA];
-    pNodalAcinusVolumeA = new float[NntotA];
-    pNodalPleuralPressureA = new float[NntotA];
+    // For trumpet lobules
+    pNodalLbbsIndLb = new float[NntotLb];
+    pNodalVelocityLb = new float[NntotLb];
+    pNodalConcentrationILb = new float[NntotLb];
+    pNodalConcentrationIILb = new float[NntotLb];
+    pNodalRadiusLb = new float[NntotLb];
+    isModifiedLb = new float[NntotLb];
+    pNodalLbcinusVolumeLb = new float[NntotLb];
+    pNodalPleuralPressureLb = new float[NntotLb];
 
-    /// OUTPUT VARIABLES INFORMATION
+    /// OUTPUT VLbRIABLES INFORMATION
     // For duct
     NvarD = 7;
 
@@ -609,40 +611,40 @@ void lung::initializeVTKArrays(){
 
     pAllOutputVariablesD = new float*[NvarD];
 
-    // For trumpet acinus
-    NvarA = 8;
+    // For trumpet lobule
+    NvarLb = 8;
 
-    pDimVarA = new int[NvarA];
-    pDimVarA[0] = 1;
-    pDimVarA[1] = 1;
-    pDimVarA[2] = 1;
-    pDimVarA[3] = 1;
-    pDimVarA[4] = 1;
-    pDimVarA[5] = 1;
-    pDimVarA[6] = 1;
-    pDimVarA[7] = 1;
+    pDimVarLb = new int[NvarLb];
+    pDimVarLb[0] = 1;
+    pDimVarLb[1] = 1;
+    pDimVarLb[2] = 1;
+    pDimVarLb[3] = 1;
+    pDimVarLb[4] = 1;
+    pDimVarLb[5] = 1;
+    pDimVarLb[6] = 1;
+    pDimVarLb[7] = 1;
 
-    pCenteringA = new int[NvarA];
-    pCenteringA[0] = 1;
-    pCenteringA[1] = 1;
-    pCenteringA[2] = 1;
-    pCenteringA[3] = 1;
-    pCenteringA[4] = 1;
-    pCenteringA[5] = 1;
-    pCenteringA[6] = 1;
-    pCenteringA[7] = 1;
+    pCenteringLb = new int[NvarLb];
+    pCenteringLb[0] = 1;
+    pCenteringLb[1] = 1;
+    pCenteringLb[2] = 1;
+    pCenteringLb[3] = 1;
+    pCenteringLb[4] = 1;
+    pCenteringLb[5] = 1;
+    pCenteringLb[6] = 1;
+    pCenteringLb[7] = 1;
 
-    pVarnamesA = new const char*[NvarA]; // !!!CAREFULL!!! NOT POSSIBLE PUTTING SPACES
-    pVarnamesA[0] = "absind_acinus";
-    pVarnamesA[1] = "velocity_acinus";
-    pVarnamesA[2] = "concentrationI_acinus";
-    pVarnamesA[3] = "concentrationII_acinus";
-    pVarnamesA[4] = "radius_acinus";
-    pVarnamesA[5] = "dilatation_acinus";
-    pVarnamesA[6] = "pleural_pressure_acinus";
-    pVarnamesA[7] = "is_modified";
+    pVarnamesLb = new const char*[NvarLb]; // !!!CAREFULL!!! NOT POSSIBLE PUTTING SPACES
+    pVarnamesLb[0] = "absind_lobules";
+    pVarnamesLb[1] = "velocity_lobule";
+    pVarnamesLb[2] = "concentrationI_lobule";
+    pVarnamesLb[3] = "concentrationII_lobule";
+    pVarnamesLb[4] = "radius_lobule";
+    pVarnamesLb[5] = "dilatation_lobule";
+    pVarnamesLb[6] = "pleural_pressure_lobule";
+    pVarnamesLb[7] = "is_modified";
 
-    pAllOutputVariablesA = new float*[NvarA];
+    pAllOutputVariablesLb = new float*[NvarLb];
 }
 
 
@@ -840,8 +842,8 @@ void lung::readModifications(){
             inFile >> modTable(i,0); // absolute index (address)
             inFile >> modTable(i,1); // factor duct transmissibility
             inFile >> modTable(i,2); // factor volume modification
-            inFile >> modTable(i,3); // factor acinus stretch (affects stiffness)
-            inFile >> modTable(i,4); // factor acinus resistance
+            inFile >> modTable(i,3); // factor lobule stretch (affects stiffness)
+            inFile >> modTable(i,4); // factor lobule resistance
         }
         inFile.close();
     }
@@ -849,7 +851,7 @@ void lung::readModifications(){
 }
 
 
-// Apply modifications in ducts and acini
+// Apply modifications in ducts and lobules
 //**************************************************************/
 void lung::applyModifications(duct* parentDuct){
 
@@ -872,27 +874,27 @@ void lung::applyModifications(duct* parentDuct){
         if (nbrLinesModTab > 0){
             // check whether this duct has to be modified and if yes then do so
             for (int i = 0; i<nbrLinesModTab; i++){
-                if (parentDuct->pAcinus->getAcinusAbsIndex() == modTable(i,0)){
+                if (parentDuct->pLobule->getLobuleAbsIndex() == modTable(i,0)){
 
-                    // Modify acinus length
-                    parentDuct->pAcinus->lA  *= pow(modTable(i,2), 1./3.);
-                    parentDuct->pAcinus->lt  *= pow(modTable(i,2), 1./3.);
+                    // Modify lobule length
+                    parentDuct->pLobule->lLb  *= pow(modTable(i,2), 1./3.);
+                    parentDuct->pLobule->lt  *= pow(modTable(i,2), 1./3.);
 
-                    // Modify acinus volume
+                    // Modify lobule volume
                     if (int(round(1000*modTable(i,2))) != 1000){
-                        // Count number of changed acini
-                        nbrAciniRed++;
-                        TAVRed += parentDuct->pAcinus->VA*(1-modTable(i,2));
+                        // Count number of changed lobules
+                        nbrLobulesRed++;
+                        TLbVRed += parentDuct->pLobule->VLb*(1-modTable(i,2));
                     }
 
-                    parentDuct->pAcinus->VA  *= modTable(i,2);
-                    parentDuct->pAcinus->VA0 *= modTable(i,2);
+                    parentDuct->pLobule->VLb  *= modTable(i,2);
+                    parentDuct->pLobule->VLb0 *= modTable(i,2);
 
-                    // Modify acinus stretch width
-                    parentDuct->pAcinus->phi_dV = modTable(i,3);
+                    // Modify lobule stretch width
+                    parentDuct->pLobule->phi_dV = modTable(i,3);
 
-                    // Modify acinus resistance
-                    parentDuct->pAcinus->Racin *= modTable(i,4);
+                    // Modify lobule resistance
+                    parentDuct->pLobule->Racin *= modTable(i,4);
                 }
             }
         }
@@ -906,7 +908,7 @@ void lung::applyModifications(duct* parentDuct){
 }
 
 
-// Correct total volume after modification of ducts and acini
+// Correct total volume after modification of ducts and lobules
 //**************************************************************/
 void lung::correctTotalVolumeAfterModification(duct* parentDuct){
 
@@ -916,11 +918,11 @@ void lung::correctTotalVolumeAfterModification(duct* parentDuct){
     // In ending duct apply correction
     if (parentDuct->reachedEnd(dLimit)){
 
-        // Check whether the acinus volume has been modifed (then must not be corrected)
+        // Check whether the lobule volume has been modifed (then must not be corrected)
         if (nbrLinesModTab > 0){
 
             for (int i = 0; i<nbrLinesModTab; i++){
-                if (parentDuct->pAcinus->getAcinusAbsIndex() == modTable(i,0)){
+                if (parentDuct->pLobule->getLobuleAbsIndex() == modTable(i,0)){
 
 
                     if (int(round(1000*modTable(i,2))) != 1000){
@@ -936,12 +938,12 @@ void lung::correctTotalVolumeAfterModification(duct* parentDuct){
             wasModified = false;
         }
 
-        // Correct the remaining acini
+        // Correct the remaining lobules
         if (!wasModified){
-            parentDuct->pAcinus->VA  += TAVRed/(nbrAcini - nbrAciniRed);
-            parentDuct->pAcinus->VA0 += TAVRed/(nbrAcini - nbrAciniRed);
+            parentDuct->pLobule->VLb  += TLbVRed/(nbrLobules - nbrLobulesRed);
+            parentDuct->pLobule->VLb0 += TLbVRed/(nbrLobules - nbrLobulesRed);
         }
-        TAV_aft_mod += parentDuct->pAcinus->VA;
+        TLbV_aft_mod += parentDuct->pLobule->VLb;
         return;
     }
 
@@ -1107,9 +1109,9 @@ void lung::computeFlow(duct* parentDuct){
     // Anchor
     if (parentDuct->reachedEnd(dLimit)){
 
-        // transfer to inlet flow / velocity in acinus
-        parentDuct->pAcinus->Q = parentDuct->Q;
-        parentDuct->pAcinus->u = parentDuct->u;
+        // transfer to inlet flow / velocity in lobule
+        parentDuct->pLobule->Q = parentDuct->Q;
+        parentDuct->pLobule->u = parentDuct->u;
 
         // increment total outlet flow
         Qouttot += parentDuct->Q;
@@ -1145,79 +1147,79 @@ void lung::estimateFlow(duct* parentDuct){
 }
 
 
-// Update flow properties in acinus
+// Update flow properties in lobule
 //**************************************************************/
-void lung::updateAcinus(duct* parentDuct){
+void lung::updateLobule(duct* parentDuct){
 
     // Declarations
     double Flow, volumeRatio;
 
-    // Update acinus volume when end duct is reached
+    // Update lobule volume when end duct is reached
     if (parentDuct->reachedEnd(dLimit)){
 
         // Set and get ratio of updated volume to former volume
         Flow = parentDuct->Q;
-        parentDuct->pAcinus->setVolumeRatio(dt/Nt, Flow);
-        volumeRatio = parentDuct->pAcinus->getVolumeRatio();
+        parentDuct->pLobule->setVolumeRatio(dt/Nt, Flow);
+        volumeRatio = parentDuct->pLobule->getVolumeRatio();
 
-        // Update inlet flow and volume of trumpet acinus
-        parentDuct->pAcinus->updateTrumpetAcinus(washout, dt/Nt, Flow);
+        // Update inlet flow and volume of trumpet lobule
+        parentDuct->pLobule->updateTrumpetLobule(washout, dt/Nt, Flow);
         return;
     }
 
     // Call next generation
-    updateAcinus(parentDuct->pMajorDaughter);
-    updateAcinus(parentDuct->pMinorDaughter);
+    updateLobule(parentDuct->pMajorDaughter);
+    updateLobule(parentDuct->pMinorDaughter);
 }
 
 
-// Time integration of concentration in ducts and acini
+// Time integration of concentration in ducts and lobules
 //**************************************************************/
 void lung::updateConcentrationInDucts(duct* parentDuct){
 
     // Declarations
     bool iT, rE;
-    double cCondAW0, cCondAW1, c1Acinus0, c2Acinus0, c1Acinus1, c2Acinus1, dcdxCondAW0, dcdxCondAW1, hCondAW0, hCondAW1;
+    double cCondAW0, cCondAW1, c1Lobule0, c2Lobule0, c1Lobule1, c2Lobule1, dcdxCondAW0, dcdxCondAW1, hCondAW0, hCondAW1;
 
     // Pick arguments for different cases
     if (parentDuct->gen==0){
         iT = true;
         rE = false;
-        c1Acinus0 = c2Acinus0 = c1Acinus1 = c2Acinus1 = -1.; // not used
+        c1Lobule0 = c2Lobule0 = c1Lobule1 = c2Lobule1 = -1.; // not used
     }
     else if (parentDuct->reachedEnd(dLimit)){
         iT = false;
         rE = true;
         if (washout==0){
-            c1Acinus0 = parentDuct->pAcinus->pSpecies0->c1A;
-            c2Acinus0 = parentDuct->pAcinus->pSpecies0->c2A;
+            c1Lobule0 = parentDuct->pLobule->pSpecies0->c1A;
+            c2Lobule0 = parentDuct->pLobule->pSpecies0->c2A;
         }
         if (washout==1){
-            c1Acinus0 = parentDuct->pAcinus->pSpecies0->c1A;
-            c2Acinus0 = parentDuct->pAcinus->pSpecies0->c2A;
-            c1Acinus1 = parentDuct->pAcinus->pSpecies1->c1A;
-            c2Acinus1 = parentDuct->pAcinus->pSpecies1->c2A;
+            c1Lobule0 = parentDuct->pLobule->pSpecies0->c1A;
+            c2Lobule0 = parentDuct->pLobule->pSpecies0->c2A;
+            c1Lobule1 = parentDuct->pLobule->pSpecies1->c1A;
+            c2Lobule1 = parentDuct->pLobule->pSpecies1->c2A;
         }
     }
     else{
         iT = false;
         rE = false;
-        c1Acinus0 = c2Acinus0 = c1Acinus1 = c2Acinus1 = -1.; // not used
+        c1Lobule0 = c2Lobule0 = c1Lobule1 = c2Lobule1 = -1.; // not used
     }
 
     // Update concentration in current duct
     if (washout==0){
-        parentDuct->pSpecies0->updateConcentrationInDuct(iT, rE, dt/Nt, cin, c1Acinus0, c2Acinus0);
+        parentDuct->pSpecies0->updateConcentrationInDuct(iT, rE, dt/Nt, cin, c1Lobule0, c2Lobule0);
     }
     if (washout==1){
-        parentDuct->pSpecies0->updateConcentrationInDuct(iT, rE, dt/Nt, cin, c1Acinus0, c2Acinus0);
-        parentDuct->pSpecies1->updateConcentrationInDuct(iT, rE, dt/Nt, cin, c1Acinus1, c2Acinus1);
+        parentDuct->pSpecies0->updateConcentrationInDuct(iT, rE, dt/Nt, cin, c1Lobule0, c2Lobule0);
+        parentDuct->pSpecies1->updateConcentrationInDuct(iT, rE, dt/Nt, cin, c1Lobule1, c2Lobule1);
     }
 
     // Anchor
     if (parentDuct->reachedEnd(dLimit)){
 
-        // Define values to be passed to acinus
+        // Define values to be passed to lobule
         if (washout==0){
             cCondAW0 = parentDuct->pSpecies0->cCAW;
             dcdxCondAW0 = parentDuct->pSpecies0->dcdxCAW;
@@ -1233,13 +1235,13 @@ void lung::updateConcentrationInDucts(duct* parentDuct){
             hCondAW1 = parentDuct->pSpecies1->h;
         }
 
-        // Update concentration in trumpet acinus
+        // Update concentration in trumpet lobule
         if (washout==0){
-            parentDuct->pAcinus->pSpecies0->updateConcentrationInTrumpetAcinus(dt/Nt, cCondAW0, dcdxCondAW0, hCondAW0);
+            parentDuct->pLobule->pSpecies0->updateConcentrationInTrumpetLobule(dt/Nt, cCondAW0, dcdxCondAW0, hCondAW0);
         }
         if (washout==1){
-            parentDuct->pAcinus->pSpecies0->updateConcentrationInTrumpetAcinus(dt/Nt, cCondAW0, dcdxCondAW0, hCondAW0);
-            parentDuct->pAcinus->pSpecies1->updateConcentrationInTrumpetAcinus(dt/Nt, cCondAW1, dcdxCondAW1, hCondAW1);
+            parentDuct->pLobule->pSpecies0->updateConcentrationInTrumpetLobule(dt/Nt, cCondAW0, dcdxCondAW0, hCondAW0);
+            parentDuct->pLobule->pSpecies1->updateConcentrationInTrumpetLobule(dt/Nt, cCondAW1, dcdxCondAW1, hCondAW1);
         }
         return;
     }
@@ -1251,50 +1253,50 @@ void lung::updateConcentrationInDucts(duct* parentDuct){
 }
 
 
-// Collect data in trumpet acinus
+// Collect data in trumpet lobule
 //**************************************************************/
-void lung::collectAllOutputDataInTrumpetAcinus(duct* parentDuct){
+void lung::collectAllOutputDataInTrumpetLobule(duct* parentDuct){
 
     // Declarations
     int N, fni, fzi, fcri, fcni, k2, k3;
     double x, y, z, dx, dy, dz, dp;
-    double dist, lA, L, a;
+    double dist, lLb, L, a;
 
-    N = parentDuct->pAcinus->pSpecies0->N;
-    fni = firstNodeIndA;
-    fzi = firstZoneIndA;
-    fcri = firstCoordIndA;
-    fcni = firstConnIndA;
+    N = parentDuct->pLobule->pSpecies0->N;
+    fni = firstNodeIndLb;
+    fzi = firstZoneIndLb;
+    fcri = firstCoordIndLb;
+    fcni = firstConnIndLb;
 
     // Node coordinates
     for (int k=0; k<=N; k++){
         k3 = 3*k;
 
-        lA = parentDuct->pAcinus->lA;
-        L  = parentDuct->pAcinus->L;
+        lLb = parentDuct->pLobule->lLb;
+        L  = parentDuct->pLobule->L;
 
-        dist = k*lA/double(N) / 5.;
+        dist = k*lLb/double(N) / 5.;
         x = parentDuct->x[1] + cos(parentDuct->phi_z)*cos(parentDuct->phi)*dist;
         y = parentDuct->y[1] + cos(parentDuct->phi_z)*sin(parentDuct->phi)*dist;
         z = parentDuct->z[1] + sin(parentDuct->phi_z)*dist;
 
 
-        pCoordinatesA[fcri+k3]   = x;
-        pCoordinatesA[fcri+k3+1] = y;
-        pCoordinatesA[fcri+k3+2] = z;
+        pCoordinatesLb[fcri+k3]   = x;
+        pCoordinatesLb[fcri+k3+1] = y;
+        pCoordinatesLb[fcri+k3+2] = z;
     }
 
     // Zone types
     for (int k=0; k<N; k++){
-        pZoneTypesA[fzi+k] = 3; // is VISIT_LINE (see visit_writer.h)
+        pZoneTypesLb[fzi+k] = 3; // is VISIT_LINE (see visit_writer.h)
     }
 
     // Connectivity
     for (int k=0; k<N; k++){
         k2 = 2*k;
 
-        pConnectivityA[fcni+k2] = fni + k;
-        pConnectivityA[fcni+k2+1] = fni + k + 1;
+        pConnectivityLb[fcni+k2] = fni + k;
+        pConnectivityLb[fcni+k2+1] = fni + k + 1;
     }
 
 
@@ -1302,41 +1304,41 @@ void lung::collectAllOutputDataInTrumpetAcinus(duct* parentDuct){
     for (int k=0; k<=N; k++){
 
         // Absolut index
-        pNodalAbsIndA[fni+k] = parentDuct->pAcinus->indAbsAcin;
+        pNodalLbbsIndLb[fni+k] = parentDuct->pLobule->indAbsLob;
 
         // Concentration values
         if (washout==0){
-            pNodalConcentrationIA[fni+k]  = parentDuct->pAcinus->pSpecies0->C(k);
-            pNodalConcentrationIIA[fni+k] = -1;
+            pNodalConcentrationILb[fni+k]  = parentDuct->pLobule->pSpecies0->C(k);
+            pNodalConcentrationIILb[fni+k] = -1;
         }
         if (washout==1){
-            pNodalConcentrationIA[fni+k]  = parentDuct->pAcinus->pSpecies0->C(k);
-            pNodalConcentrationIIA[fni+k] = parentDuct->pAcinus->pSpecies1->C(k);
+            pNodalConcentrationILb[fni+k]  = parentDuct->pLobule->pSpecies0->C(k);
+            pNodalConcentrationIILb[fni+k] = parentDuct->pLobule->pSpecies1->C(k);
         }
 
-        if (parentDuct->pAcinus->pSpecies0->C(k) > 1.01){
-          cout << "ERROR: Concentration in trumpet acinus higher than 1: C(k) = " << parentDuct->pAcinus->pSpecies0->C(k) << endl;
+        if (parentDuct->pLobule->pSpecies0->C(k) > 1.01){
+          cout << "ERROR: Concentration in trumpet lobule higher than 1: C(k) = " << parentDuct->pLobule->pSpecies0->C(k) << endl;
         }
 
         // Radius
-        pNodalRadiusA[fni+k] = 0.1*sqrt(4. * parentDuct->pAcinus->pSpecies0->ATr(k)/pi)/2.;
+        pNodalRadiusLb[fni+k] = 0.1*sqrt(4. * parentDuct->pLobule->pSpecies0->ATr(k)/pi)/2.;
 
         // Velocity
-        pNodalVelocityA[fni+k] = parentDuct->pAcinus->pSpecies0->UphTr(k);
+        pNodalVelocityLb[fni+k] = parentDuct->pLobule->pSpecies0->UphTr(k);
 
-        // Acinus volume
-        pNodalAcinusVolumeA[fni+k] = parentDuct->pAcinus->VA - parentDuct->pAcinus->VA0;
+        // Lobule volume
+        pNodalLbcinusVolumeLb[fni+k] = parentDuct->pLobule->VLb - parentDuct->pLobule->VLb0;
 
         // Pleural pressure
-        pNodalPleuralPressureA[fni+k] = ppl;
+        pNodalPleuralPressureLb[fni+k] = ppl;
     }
 
 
     // Increment indices;
-    firstNodeIndA += (N + 1);
-    firstZoneIndA +=  N;
-    firstCoordIndA += 3*(N + 1);
-    firstConnIndA += 2*N;
+    firstNodeIndLb += (N + 1);
+    firstZoneIndLb +=  N;
+    firstCoordIndLb += 3*(N + 1);
+    firstConnIndLb += 2*N;
 
     return;
 
@@ -1392,7 +1394,7 @@ void lung::collectAllOutputData(duct* parentDuct){
     for (int k=0; k<=N; k++){
 
         // Absolut index
-        pNodalAbsIndD[fni+k] = parentDuct->indAbs;
+        pNodalLbbsIndD[fni+k] = parentDuct->indAbs;
 
         // Pressure
         if (parentDuct->gen == 0) { // trachea
@@ -1442,8 +1444,8 @@ void lung::collectAllOutputData(duct* parentDuct){
     // Anchor
     if (parentDuct->reachedEnd(dLimit)){
 
-        // Collect in trumpet acinus
-        collectAllOutputDataInTrumpetAcinus(parentDuct);
+        // Collect in trumpet lobule
+        collectAllOutputDataInTrumpetLobule(parentDuct);
 
         return;
     }
@@ -1462,11 +1464,11 @@ void lung::writeFullLungData(duct* parentDuct){
     // TOTAL LUNG OUTPUTS (VTK)
     // Collect data
     firstNodeIndD = firstZoneIndD = firstCoordIndD = firstConnIndD = 0;
-    firstNodeIndA = firstZoneIndA = firstCoordIndA = firstConnIndA = 0;
+    firstNodeIndLb = firstZoneIndLb = firstCoordIndLb = firstConnIndLb = 0;
     collectAllOutputData(parentDuct);
 
     // Write duct data
-    pAllOutputVariablesD[0] = pNodalAbsIndD;
+    pAllOutputVariablesD[0] = pNodalLbbsIndD;
     pAllOutputVariablesD[1] = pZonalVelocityD;
     pAllOutputVariablesD[2] = pNodalPressureD;
     pAllOutputVariablesD[3] = pNodalConcentrationID;
@@ -1480,20 +1482,20 @@ void lung::writeFullLungData(duct* parentDuct){
 
     write_unstructured_mesh(filenameD, 0, NntotD, pCoordinatesD, NztotD, pZoneTypesD, pConnectivityD, NvarD, pDimVarD, pCenteringD, pVarnamesD, pAllOutputVariablesD);
 
-    // Write acinus data
-    pAllOutputVariablesA[0] = pNodalAbsIndA;
-    pAllOutputVariablesA[1] = pNodalVelocityA;
-    pAllOutputVariablesA[2] = pNodalConcentrationIA;
-    pAllOutputVariablesA[3] = pNodalConcentrationIIA;
-    pAllOutputVariablesA[4] = pNodalRadiusA;
-    pAllOutputVariablesA[5] = pNodalAcinusVolumeA;
-    pAllOutputVariablesA[6] = pNodalPleuralPressureA;
-    pAllOutputVariablesA[7] = isModifiedA;
+    // Write lobule data
+    pAllOutputVariablesLb[0] = pNodalLbbsIndLb;
+    pAllOutputVariablesLb[1] = pNodalVelocityLb;
+    pAllOutputVariablesLb[2] = pNodalConcentrationILb;
+    pAllOutputVariablesLb[3] = pNodalConcentrationIILb;
+    pAllOutputVariablesLb[4] = pNodalRadiusLb;
+    pAllOutputVariablesLb[5] = pNodalLbcinusVolumeLb;
+    pAllOutputVariablesLb[6] = pNodalPleuralPressureLb;
+    pAllOutputVariablesLb[7] = isModifiedLb;
 
-    char filenameA[100];
-    sprintf(filenameA, "data/acinus/TotalLungOutputAcinus%05d.vtk", frame);
+    char filenameLb[100];
+    sprintf(filenameLb, "data/lobule/TotalLungOutputLobule%05d.vtk", frame);
 
-    write_unstructured_mesh(filenameA, 0, NntotA, pCoordinatesA, NztotA, pZoneTypesA, pConnectivityA, NvarA, pDimVarA, pCenteringA, pVarnamesA, pAllOutputVariablesA);
+    write_unstructured_mesh(filenameLb, 0, NntotLb, pCoordinatesLb, NztotLb, pZoneTypesLb, pConnectivityLb, NvarLb, pDimVarLb, pCenteringLb, pVarnamesLb, pAllOutputVariablesLb);
     frame += 1;
 }
 
