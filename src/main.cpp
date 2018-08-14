@@ -53,7 +53,7 @@ int main(int argc, char** argv){
     cout << "*******************************\n";
     IOdict sysPropIO            = IOdict("constant/systemProperties");
     sysPropIO.outputConsole     = 1;
-    sysProp.maxGenAc            = sysPropIO.lookup("maxGenA");
+    sysProp.maxGenLb            = sysPropIO.lookup("maxGenLb");
     sysProp.p0                  = sysPropIO.lookup("p0");
     sysProp.lAm_fac             = sysPropIO.lookup("lAm_fac");
     sysProp.bending             = sysPropIO.lookup("bending");

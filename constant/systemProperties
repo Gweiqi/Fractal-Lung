@@ -9,8 +9,8 @@ r			0.326		// Bifurcation parameter
 eta			2.97		// Bifurcation parameter
 kappa			0.85		// Homothety ratio in the trumpet lobule (0.792 in the conductive airways)
 
-// Acinus parameter
-maxGenA			17		// Max generation in trumpet acini
+// Trumpet lobule parameter
+maxGenLb			17	// Max generation in trumpet lobule
 lAm_fac			3.25		// factor to determine mean trumpet lobule length (in [m]) as a function of the volume (l_lb^3 / V_lb = lAm_fac)
 bending			0.5		// determines degree of non-linearity in trumpet constitutive law (p(V) is close to linear if bending -> 0., close to rectangular if beding -> 1)
 n1			16.		// exponents used in power law fro trumpet
