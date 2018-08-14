@@ -55,7 +55,7 @@ int main(int argc, char** argv){
     sysPropIO.outputConsole     = 1;
     sysProp.maxGenLb            = sysPropIO.lookup("maxGenLb");
     sysProp.p0                  = sysPropIO.lookup("p0");
-    sysProp.lAm_fac             = sysPropIO.lookup("lAm_fac");
+    sysProp.lLbm_fac             = sysPropIO.lookup("lLbm_fac");
     sysProp.bending             = sysPropIO.lookup("bending");
     sysProp.r                   = sysPropIO.lookup("r");
     sysProp.eta                 = sysPropIO.lookup("eta");
@@ -67,7 +67,7 @@ int main(int argc, char** argv){
     sysProp.bc                  = sysPropIO.lookup("bc");
     sysProp.R_fac               = sysPropIO.lookup("R_fac");
     sysProp.Diff_fac            = sysPropIO.lookup("Diff_fac");
-    sysProp.scalingTL           = sysPropIO.lookup("scalingTL");
+    sysProp.scalingLbL          = sysPropIO.lookup("scalingLbL");
 
 
     // Read fluid parameter from external file
