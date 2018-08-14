@@ -20,7 +20,7 @@ gas::gas(controlProperties *contProp_, systemProperties *sysProp_, bool condAW, 
     }
 
     if (trumpetlobule){
-        N = contProp->NxAcin;
+        N = contProp->NxLob;
     }
     else{
         N = int(length/gridsize);
