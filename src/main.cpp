@@ -170,7 +170,7 @@ int main(int argc, char** argv){
     contProp.nbrBreaths         = nbrBreaths; cout<<std::left<<setw(20)<<"#Breaths"<<" = "<<nbrBreaths<<endl;
     contProp.generalCN          = contPropIO.lookup("generalCN");
     contProp.CFL                = contPropIO.lookup("CFL");
-    contProp.NxAcin             = contPropIO.lookup("NxAcin");
+    contProp.NxLob              = contPropIO.lookup("NxLob");
     contProp.NxDuctMin          = contPropIO.lookup("NxDuctMin");
     contProp.NxDuctMax          = contPropIO.lookup("NxDuctMax");
     contProp.fOutFull           = contPropIO.lookup("fOutFull");

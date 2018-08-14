@@ -74,7 +74,7 @@ struct controlProperties{
     double CFL;             // CFL number
     int NxDuctMin;          // Minimum number of grid points in ducts
     int NxDuctMax;          // Maximum number of grid points in ducts
-    int NxAcin;             // Number of grid points in acini
+    int NxLob;             // Number of grid points in acini
     int fOutFull;           // Write frequency full output
     bool writeFull;         // Write frequency full output (1 - yes, 0 - no)
     bool writeRedGrid;      // Full data output on reduced grid (1 - yes, 0 - no)
