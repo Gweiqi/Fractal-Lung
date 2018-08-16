@@ -1,7 +1,7 @@
 // Input
 cInlet			0		// Concentration at inlet
 WO			0		// STG-MBW (0); MTG-SBW (1), defined in input file
-bc			0		// 0: use flow rate BC at inlet. 1: Use pleural pressure BC
+bc			0		// 0: use flow rate BC at inlet. 1: Use pleural pressure BC (!!! Not tested yet!!! ==> use symmetric (with splines) / sine flow b.c)
 
 // Conducting airways parameter
 p0			101325		// Ambient pressure at mouth
@@ -10,12 +10,12 @@ eta			2.97		// Bifurcation parameter
 kappa			0.85		// Homothety ratio in the trumpet lobule (0.792 in the conductive airways)
 
 // Trumpet lobule parameter
-maxGenLb			17	// Max generation in trumpet lobule
-lLbm_fac			3.25	// factor to determine mean trumpet lobule length (in [m]) as a function of the volume (l_lb^3 / V_lb = lLbm_fac)
+maxGenLb		17		// Max generation in trumpet lobule
+lLbm_fac		3.25		// factor to determine mean trumpet lobule length (in [m]) as a function of the volume (l_lb^3 / V_lb = lLbm_fac)
 bending			0.5		// determines degree of non-linearity in trumpet constitutive law (p(V) is close to linear if bending -> 0., close to rectangular if beding -> 1)
-n1			16.		// exponents used in power law fro trumpet
+n1			14.		// exponents used in power law fro trumpet
 n2			2.
-z_star			5		// generation at which model cross-section interacts with exponential growth
+z_star			4		// generation at which model cross-section interacts with exponential growth
 dp			1500
 R_fac			10		// Magnification factor for total lobular resistance (apply carefully)
 Diff_fac		1		// Modification factor for molecular Diffusion coefficient (apply carefully)
