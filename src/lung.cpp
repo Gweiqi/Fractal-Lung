@@ -11,8 +11,7 @@
 
 // Constructor
 //**************************************************************/
-lung::lung(init *initData, controlProperties *contProp_,
-            systemProperties *sysProp_, transportProperties *transProp_){
+lung::lung(controlProperties *contProp_, systemProperties *sysProp_, transportProperties *transProp_){
 
     pi = atan(1.0)*4.0;
 
@@ -25,17 +24,17 @@ lung::lung(init *initData, controlProperties *contProp_,
 
     // Initialize lung variables and pass values
     //**********************************************************/
-    dLimit              = initData->dL;
-    FRC                 = initData->FRC;
-    washout             = initData->washout;
-    species             = initData->species;
-    dt                  = initData->dt;
-    Tend                = initData->Tend;
-    nbrBreaths          = initData->nbrBreaths;
+    dLimit              = sysProp->dL;
+    FRC                 = sysProp->FRC;
+    washout             = contProp->washout;
+    species             = contProp->species;
+    dt                  = contProp->dt;
+    Tend                = contProp->Tend;
+    nbrBreaths          = contProp->nbrBreaths;
 
 
     // Set bifurcation parameters
-    maxGenTrumpLob     = sysProp->maxGenLb;
+    maxGenTrumpLob      = sysProp->maxGenLb;
     patm                = sysProp->p0;
     r                   = sysProp->r;
     eta                 = sysProp->eta;
@@ -47,8 +46,8 @@ lung::lung(init *initData, controlProperties *contProp_,
     kappa_hat          = 2.*kappa*kappa;
 
     // Set inlet concentration
-    cin                 = sysProp->cin;
-    bc                  = sysProp->bc;
+    cin                 = contProp->cin;
+    bc                  = contProp->bc;
 
     // Set transport properties
     mu                  = transProp->mu;

@@ -1,20 +1,15 @@
 \begin{thebibliography}{}
 
-\bibitem[EL, 2009]{Cussler2009}
-EL, C. (2009).
+\bibitem[Cussler, 2009]{Cussler2009}
+Cussler, E.~L. (2009).
 \newblock {\em {Diffusion}}.
 \newblock Cambridge University Press, 1st edition.
 
-\bibitem[ER, 1963]{Weibel1963}
-ER, W. (1963).
-\newblock {\em {Morphometry of the Human Lung}}.
-\newblock Springer-Verlag Berlin Heidelberg, xy edition.
-
-\bibitem[JR, 1957]{Womersley1957}
-JR, W. (1957).
-\newblock {Oscillatory flow in arteries: the constrained elastic tube as a
-  model of arterial flow and pulse transmission}.
-\newblock {\em Physics in Medicine and Biology}, 2(2).
+\bibitem[Kaczka et~al., 2011]{Kaczka2011}
+Kaczka, D.~W., Colletti, A.~A., Tawhai, M.~H., and Simon, B.~A. (2011).
+\newblock {Computational Analyses of Airway Flow and Lung Tissue Dynamics}.
+\newblock In {\em Image-Based Computational Modeling of the Human Circulatory
+  and Respiratory System}, chapter~10. Springer US.
 
 \bibitem[Majumdar et~al., 2005]{Majumdar2005}
 Majumdar, A., Alencar, A.~M., Buldyrev, S.~V., Hantos, Z., Lutchen, K.~R.,
@@ -22,5 +17,16 @@ Majumdar, A., Alencar, A.~M., Buldyrev, S.~V., Hantos, Z., Lutchen, K.~R.,
 \newblock {Relating Airway Diameter Distributions to Regular Branching
   Asymmetry in the Lung}.
 \newblock {\em Physical Review Letter}, 95(168101).
+
+\bibitem[Weibel, 1963]{Weibel1963}
+Weibel, E.~R. (1963).
+\newblock {\em {Morphometry of the Human Lung}}.
+\newblock Springer-Verlag Berlin Heidelberg, xy edition.
+
+\bibitem[Womersley, 1957]{Womersley1957}
+Womersley, J.~R. (1957).
+\newblock {Oscillatory flow in arteries: the constrained elastic tube as a
+  model of arterial flow and pulse transmission}.
+\newblock {\em Physics in Medicine and Biology}, 2(2).
 
 \end{thebibliography}

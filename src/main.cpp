@@ -31,31 +31,19 @@ int main(int argc, char** argv){
     ifstream inFile;
     ofstream outFile;
 
-
-    // Read initial data
-    // (to be provided by data/inputLung)
-    //**********************************************************/
-    init initData;
-    cout << "Input parameters:\n";
-    cout << "*******************************\n";
-    IOdict initDataIO    = IOdict("data/inputLung");
-    initDataIO.outputConsole = 1;
-    initData.dL         = initDataIO.lookup("dLimit");
-    initData.FRC        = initDataIO.lookup("FRC");
-    initData.washout    = initDataIO.lookup("washout");
-    initData.species    = initDataIO.lookup("species");
-
     // Read lung parameter from external file
-    // (to be provided by data/systemProperties)
+    // (to be provided by constant/systemProperties)
     //**********************************************************/
     systemProperties sysProp;
     cout << "\n\nLung parameters:\n";
     cout << "*******************************\n";
     IOdict sysPropIO            = IOdict("constant/systemProperties");
     sysPropIO.outputConsole     = 1;
+    sysProp.FRC                 = sysPropIO.lookup("FRC");
+    sysProp.dL                  = sysPropIO.lookup("dLimit");
     sysProp.maxGenLb            = sysPropIO.lookup("maxGenLb");
     sysProp.p0                  = sysPropIO.lookup("p0");
-    sysProp.lLbm_fac             = sysPropIO.lookup("lLbm_fac");
+    sysProp.lLbm_fac            = sysPropIO.lookup("lLbm_fac");
     sysProp.bending             = sysPropIO.lookup("bending");
     sysProp.r                   = sysPropIO.lookup("r");
     sysProp.eta                 = sysPropIO.lookup("eta");
@@ -63,15 +51,33 @@ int main(int argc, char** argv){
     sysProp.n1                  = sysPropIO.lookup("n1");
     sysProp.n2                  = sysPropIO.lookup("n2");
     sysProp.z_star              = sysPropIO.lookup("z_star");
-    sysProp.cin                 = sysPropIO.lookup("cInlet");
-    sysProp.bc                  = sysPropIO.lookup("bc");
     sysProp.R_fac               = sysPropIO.lookup("R_fac");
     sysProp.Diff_fac            = sysPropIO.lookup("Diff_fac");
     sysProp.scalingLbL          = sysPropIO.lookup("scalingLbL");
 
 
+    // Read/asign control parameter from external file
+    // (to be provided by data/controlProperties)
+    //**********************************************************/
+    controlProperties contProp;
+    cout << "\n\nControl properties:\n";
+    cout << "*******************************\n";
+    IOdict contPropIO           = IOdict("constant/controlDict");
+    contPropIO.outputConsole    = 1;
+    contProp.washout            = contPropIO.lookup("washout");
+    contProp.species            = contPropIO.lookup("species");
+    contProp.cin                = contPropIO.lookup("cInlet");
+    contProp.bc                 = contPropIO.lookup("bc");
+    contProp.generalCN          = contPropIO.lookup("generalCN");
+    contProp.CFL                = contPropIO.lookup("CFL");
+    contProp.NxLob              = contPropIO.lookup("NxLob");
+    contProp.NxDuctMin          = contPropIO.lookup("NxDuctMin");
+    contProp.NxDuctMax          = contPropIO.lookup("NxDuctMax");
+    contProp.fOutFull           = contPropIO.lookup("fOutFull");
+    contProp.writeFull          = contPropIO.lookup("writeFull");
+
     // Read fluid parameter from external file
-    // (to be provided by data/transportProperties)
+    // (to be provided by constant/transportProperties)
     //**********************************************************/
     transportProperties transProp;
     cout << "\n\nFluid parameters:\n";
@@ -117,7 +123,7 @@ int main(int argc, char** argv){
 
     // Read in flow or pressure data
     //**********************************************************/
-    if (sysProp.bc == 0){
+    if (contProp.bc == 0){
         inFile.open("data/inletFlow");
         if (inFile.is_open()){
             for (int i = 0; i<nbrBreaths; i++){
@@ -146,35 +152,17 @@ int main(int argc, char** argv){
     //**********************************************************/
     double dt, Tend;
     dt = 1./allBreathFlow[0].fs;
-    initData.dt = dt;
 
     // Compute total simulation time;
     Tend = 0.;
     for (int i = 0; i<nbrBreaths; i++){
         Tend += allBreathFlow[i].TB;
     }
-    initData.Tend = Tend;
-    initData.nbrBreaths = nbrBreaths;
 
-
-    // Read/asign control parameter from external file
-    // (to be provided by data/controlProperties)
-    //**********************************************************/
-    controlProperties contProp;
-    cout << "\n\nControl properties:\n";
-    cout << "*******************************\n";
-    IOdict contPropIO           = IOdict("constant/controlDict");
-    contPropIO.outputConsole    = 1;
+    // pass to control properties struct
     contProp.dt                 = dt; cout<<std::left<<setw(20)<<"dt"<<" = "<<dt<<endl;
     contProp.Tend               = Tend; cout<<std::left<<setw(20)<<"Tend"<<" = "<<Tend<<endl;
     contProp.nbrBreaths         = nbrBreaths; cout<<std::left<<setw(20)<<"#Breaths"<<" = "<<nbrBreaths<<endl;
-    contProp.generalCN          = contPropIO.lookup("generalCN");
-    contProp.CFL                = contPropIO.lookup("CFL");
-    contProp.NxLob              = contPropIO.lookup("NxLob");
-    contProp.NxDuctMin          = contPropIO.lookup("NxDuctMin");
-    contProp.NxDuctMax          = contPropIO.lookup("NxDuctMax");
-    contProp.fOutFull           = contPropIO.lookup("fOutFull");
-    contProp.writeFull          = contPropIO.lookup("writeFull");
 
 
 
@@ -193,7 +181,7 @@ int main(int argc, char** argv){
 
     // Call driver for simulation start
     //**********************************************************/
-    driver(initData, allBreathFlow, allBreathResults, contProp, sysProp, transProp);
+    driver(allBreathFlow, allBreathResults, contProp, sysProp, transProp);
 
 
     // Write simulated data to file (primary output)

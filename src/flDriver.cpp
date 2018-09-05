@@ -22,7 +22,7 @@ using namespace Eigen;
 
 
 //**************************************************************/
-void driver(init initData, breathFlow* allBreathFlow, breathResults* allBreathResults,
+void driver(breathFlow* allBreathFlow, breathResults* allBreathResults,
             controlProperties contProp, systemProperties sysProp, transportProperties transProp){
 
     // Initialize variables
@@ -35,12 +35,12 @@ void driver(init initData, breathFlow* allBreathFlow, breathResults* allBreathRe
 
     // Get variables from init data struct
     //**************************************************************/
-    Tend = initData.Tend;
-    dt = initData.dt;
+    Tend = contProp.Tend;
+    dt = contProp.dt;
 
     // Create Lung Object
     //**********************************************************/
-    lung LUNG(&initData, &contProp, &sysProp, &transProp);
+    lung LUNG(&contProp, &sysProp, &transProp);
 
     // Generate morphology of conducting airways
     cout << "\n\nGenerate Morphology:\n";

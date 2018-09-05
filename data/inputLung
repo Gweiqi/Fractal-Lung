@@ -1,5 +1,0 @@
-// Input data for lung model
-dLimit			0.0018		// smallest diameter of conducting airways (in m)
-FRC			0.0030		// functional residual capacity FRC (in m^3)
-washout			0		// kind of washout: MBW (0) DTG SBW (1)
-species			4		// species: 0_2 (0), CO_2 (1), He (2), SF_6 (3), N_2 (4)  - for MBW only

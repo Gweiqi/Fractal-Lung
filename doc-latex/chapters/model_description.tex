@@ -42,7 +42,7 @@ A detailed mathematical description of the trumpet, its geometrical and dynamica
 \begin{figure}[tb]
 \centering
 \includegraphics[width=0.5\textwidth]{figures/trumpetmodel}
-\caption{}
+\caption{Schematic representation of a trumpet-lobule with inlet cross-section $S_\ter$, dynamic cross-section $S_\lb(x,t)$ and volume $V_\lb(t)$}
 \label{fig:trumpetSketch}
 \end{figure}
 
@@ -57,7 +57,7 @@ A detailed mathematical description of the trumpet, its geometrical and dynamica
 Lung ventilation is simulated by means of a lumped parameter (0-dimensional) model illustrated in Figure \ref{fig:lumpedparametermodel}.
 For the duct-like airways purely resistive elements were used.
 During normal breathing, airflow in the lung is unsteady and inertia plays a considerable role regarding the flow resistance in bigger airways until the tenth generation \citep{Kaczka2011}.
-The theory by \citet{Womersley} for pulsatile flow in tubes was therefore applied.
+The theory by \citet{Womersley1957} for pulsatile flow in tubes was therefore applied.
 In general, the pressure difference between two subsequent nodes with node index $i$ and $j$ in the network reads.
 Here $Q_{ij}$ is the flow rate in direction of the negative pressure gradient, and the hydrodynamic resistance $R_{ij}$ depends on the radius $r_{ij}$ and the length $l_{ij}$ of the conducting airway between two nodes, and on the breath period $\mathrm{TB}$.
 
@@ -131,6 +131,13 @@ S_\lb(x,t) = p_1 x^{n_1} + p_2 x^{n_2} + S_\ter\cc
 with $n_1, n_2 = 16, 2$, where the coefficients $p_1$ and $p_2$ were defined such that the $S_\lb$ intersects with Equation (\ref{eqn:crosssection}) at a chosen generation $z^\star$, and the prescribed initial volume $V_\lb^0$ of the trumpet lobule is obtained for a given length $l_\lb$ of the trumpet lobule.
 The coefficients were thus defined by the following linear system
 
+\begin{figure}[tb!]
+  \centering
+  \includegraphics[width=1.0\textwidth]{figures/trumpet_geometry}
+  \caption{Above: the generation $z$ plotted as function of the cumulative length or distance $x$ with $l_\ter = d_\ter = unity$. The solid line indicates the function described by equation (\ref{eqn:zofx}). Below: The cross-section as it follows from equation (\ref{eqn:crosssection}) (magenta) and the model (\ref{eqn:crosssectionModel}) (green) where $p_1$ and $p_2$ were defined to yield the same integral as the exponential law and intersects at generation $z^\star = 5$ ($z = 0$ at trumpet inlet).}
+  \label{fig:trumpet_geometry}
+\end{figure}
+
 \begin{equation} \label{eqn:linearSystemCoeff}
 \left[\begin{array}{c c} {x^\star}^{n_1}              & {x^\star}^{n_2} \\
                          \frac{l_\lb^{n_1+1}}{n_1 + 1} & \frac{l_\lb^{n_1+1}}{n_1 + 1} \\
@@ -146,15 +153,14 @@ The coefficients were thus defined by the following linear system
 
 with $S^\star = S_\lb(x^\star, 0)$ and $z^\star = z(x^\star)$.
 
-\begin{figure}[tb!]
-  \centering
-  \includegraphics[width=1.0\textwidth]{figures/trumpet_geometry}
-  \caption{Above: the generation $z$ plotted as function of the cumulative length or distance $x$ with $l_\ter = d_\ter = unity$. The solid line indicates the function described by equation (\ref{eqn:zofx}). Below: The cross-section as it follows from equation (\ref{eqn:crosssection}) (magenta) and the model (\ref{eqn:crosssectionModel}) (green) where $p_1$ and $p_2$ were defined to yield the same integral as the exponential law and intersects at generation $z^\star = 5$ ($z = 0$ at trumpet inlet).}
-  \label{fig:trumpet_geometry}
-\end{figure}
-
 In Figure \ref{fig:trumpet_geometry}, a comparison between equations (\ref{eqn:crosssection}) and (\ref{eqn:crosssectionModel}) shows a good agreement.
-The actual length of the trumpet model was defined based on equation \ref{eqn:trumpet_geometry}, from which $l_\lb\approx0.98 L$ follows for a lobule with $16-18$ generation.
+The actual length of the trumpet model was defined based on the cumulative length
+
+\begin{equation}
+l_\lb = \sum_{k=1}^{z_\mathrm{max}} l_\ter\kappa^k
+\end{equation}
+
+where $l_\lb = \approx0.98 L$ follows for a lobule with $z_\mathrm{max} = 16-18$ generation.
 The system (\ref{eqn:linearSystemCoeff}) determined the initial (or end-expiratory) trumpet shape $S_\lb(x,0)$.
 During breathing the cross-section widens.
 Therefore the first coefficient of the power law was set to be a time-depending parameter $p_1 = p_1(t)$.
@@ -183,7 +189,7 @@ Advection-diffusion processes, taking place in a pipe-like geometry are subject 
 As a consequence, high-concentration gas is transported (advected) along low-concentration gas increasing the interface of high concentration gradients and therefore increasing the average diffusivity within a cross-section.
 In the human lung this phenomena can take place on different scales: In the upper airway, where the Reynolds number $\Rey = u d \rho/\mu$ is in the order of $10'000$, turbulent flow strongly enhances mixing.
 In smaller airways ($\Rey < 2'000$), Poiseuille flow with a parabolic velocity profile can be assumed.
-Enhanced diffusion due to high velocity gradients is usually modelled based on the concept of Taylor dispersion, where the local diffusion coefficient is a function of the local Peclet number \citet{Cussler209},
+Enhanced diffusion due to high velocity gradients is usually modelled based on the concept of Taylor dispersion, where the local diffusion coefficient is a function of the local Peclet number \citet{Cussler2009},
 \begin{equation}
 \hat{D} = D\left(1 + \frac{1}{192}\Pe^2\right) \pp
 \end{equation}
@@ -394,7 +400,7 @@ To solve the resulting system of equations, we applied an iterative method (bi c
 
 
 %****************** new sub-section ********************
-\subsubsection{Gas transport equation} \label{ssec:gas}
+\subsection{Gas transport equation} \label{ssec:gas}
 For the transport of an inert gas in the lung two transport mechanism were considered: Advection (in this context also called convection) and molecular diffusion.
 More information about the underlying assumptions are given in the method section of the main article.
 The 1D-advection-diffusion equation governs the evolution of the gas concentration $c = c(x,t)$ (normalized with the maximum concentration, $c\in[0,1]$) in time and along the airway streamwise coordinate $x$:
@@ -542,4 +548,63 @@ The refined time-step $\Delta t / n_\mathrm{tsr}$ was then used for the numerica
 %********************* NEW SECTION *********************
 %-------------------------------------------------------
 \section{Code structure} \label{sec:code_structure}
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+The computer code is implemented in C++.
+The computer code consists of four objects (classes) (\texttt{lung.cpp}, \texttt{duct.cpp}, \texttt{lobule.cpp}, \texttt{gas.cpp}) which constitute the lung model.
+The remaining source files relate to the procedural aspects of the simulation and data handling.
+An overview of the whole environment of the model is explained in more detail in Section \ref{sec:environment} in the upcoming chapter.
+Here, the main procedural structure of the solver, wich are defined in \texttt{main.cpp} and \texttt{flDriver.cpp}, are outlined, and the architecture of the lung model is shown schematically.
+
+\subsubsection{Input / Output}
+Reading and writing of input, respectively output data is defined in \texttt{main.cpp}, which also contains the simulation start command via the
+call of a driver.
+The structure is as follows:
+\begin{itemize}
+  \item Reading system (model) parameters and simulation control parameters from input files.
+  \item Dynamically allocate and stock containers for these parameteres.
+  \item Dynamically allocate (no stocking yet) containers for simulation outputs / results.
+  \item Call of driver for simulation.
+  \item Write output containters to local environment.
+\end{itemize}
+
+\subsubsection{Model built \& simulation}
+The driver \texttt{flDriver.cpp} called in \texttt{main.cpp} first builds the model accoring to a parametrized fractal morphology and initializes its member variables.
+After this the simulation time loop is started in which the different (per-time-step) numerical commands are called.
+The structure is as follows:
+\begin{itemize}
+  \item Construct lung object (see model architecture bellow).
+  \item Generate fractal tree of duct-like airways.
+  \item Generate / Add trumpet-lobules at the end of each terminal duct.
+  \item Pass input data (e.g. flow rate profile, breath periode) to lung model.
+  \item Read and apply lung modification instructions (e.g. for lobular compliance modification $\phi$)
+  \item Allocate / Initialize vectors and matrices for ventilation LPM (linear system).
+  \item Define gridsize.
+  \item Setup gas object.
+  \item Start time loop:
+  \begin{itemize}
+    \item Reset breath period if necessary.
+    \item Compute time step refinement (TSR).
+    \item Start inner loop (according to TSR):
+    \begin{itemize}
+      \item Write entries in system matrix and right-hand side vector for ventilation LPM.
+      \item Solve for pressure and distribute to nodes in LPM.
+      \item Compue flow rate in each duct-like airway.
+      \item Update trumpet-lobule dynamics.
+      \item Update concentration in 1D domains (domain decomposition approach).
+    \end{itemize}
+    \item Write results of current time step to output data containers.
+  \end{itemize}
+\end{itemize}
+
+
+\subsubsection{Model architecture}
+The numerical model of the lung consits of four different objects: The lung-object (\texttt{lung.cpp}) governs the construction of the model and the all calls of numerical computations within the different lung units (i.e. ducts and lobules).
+Computations or data passing that are applied to all (or certain) lung units, a recursive implementation is chosen.
+E.g. the rules to grow (or stop growing) daughter ducts according to Equation (\ref{eqn:bifurcationRule}) are the same for all ducts.
+Therefore it is handy to implement only the rule and then apply it via recursion to all ducts and lobules withing the tree-like morphology
+This concept is applied for many operational steps of the model.
+The strict implementation of recursion for this type of domain morphology also assures that the domains are scaned / traveled in a predefined manner, which eases the right allocations of different units or nodes.
+The lung-object points (via pointer \textit{pTrachea}) on a fractal tree of duct-objets (\texttt{duct.cpp}).
+A duct-like airways is connected (via pointers \textit{pParent}, \textit{pMinoDaughter}, \textit{pMajorDaughter}) to the neighoring branches (ducts).
+Terminal ducts (defined by $d_\mathrm{Lim}$) are connected to a lobule-object (\texttt{lobule.cpp}, via pointer \textit{pMinoDaughter})
+Each duct and lobule is associated with a proper gas object.
+A Schematics of this architecture is shown in Figure ...

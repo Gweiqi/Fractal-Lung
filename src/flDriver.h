@@ -8,7 +8,7 @@
 
 /// Driver prototype
 //**************************************************************/
-void driver(init initData, breathFlow* allBreathFlow, breathResults* allBreathResults,
+void driver(breathFlow* allBreathFlow, breathResults* allBreathResults,
             controlProperties contProp, systemProperties sysProp, transportProperties transProp);
 
 

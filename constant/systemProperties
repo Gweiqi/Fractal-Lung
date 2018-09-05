@@ -1,10 +1,10 @@
-// Input
-cInlet			0		// Concentration at inlet
-WO			0		// STG-MBW (0); MTG-SBW (1), defined in input file
-bc			0		// 0: use flow rate BC at inlet. 1: Use pleural pressure BC (!!! Not tested yet!!! ==> use symmetric (with splines) / sine flow b.c)
+// General inputs
+FRC			0.0030		// functional residual capacity FRC (in m^3)
+p0			101325		// Ambient pressure at mouth
+
 
 // Conducting airways parameter
-p0			101325		// Ambient pressure at mouth
+dLimit			0.0018		// smallest diameter of conducting airways (in m)
 r			0.326		// Bifurcation parameter
 eta			2.97		// Bifurcation parameter
 kappa			0.85		// Homothety ratio in the trumpet lobule (0.792 in the conductive airways)

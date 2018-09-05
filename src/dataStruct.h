@@ -8,21 +8,6 @@
 using namespace std;
 
 
-// Struct declarations
-//**************************************************************/
-///Struct containing data to initialize a lung object
-struct init{
-    double dt;              // Time stepping
-    double Tend;            // Duration of simulation
-    int washout;            // STG-MBW (0); MTG-SBW (1), defined in input file
-    int species;            // species: 0_2 (0), CO_2 (1), He (2), SF_6 (3), N_2 (4)  - for MBW only
-    int nbrBreaths;         // Number of breaths
-    double dL;              // Limit for transitional bronchioles
-    double FRC;             // Functional residual capacity FRC [in m^3]
-    // double NgS, NgL;
-};
-
-
 /// Struct containing data for single breath
 //**************************************************************/
 struct breathFlow{
@@ -35,11 +20,11 @@ struct breathFlow{
 };
 
 
-/// Struct containing conducting airway and lobules properties
+/// Struct containing conducting lung, airway, and lobules properties
 //**************************************************************/
 struct systemProperties{
-    double cin;             // Inlet concentration
-    int    bc ;             // Flag for boundary condition for LPM
+    double FRC;             // Functional residual capacity FRC [in m^3]
+    double dL;              // Limit diameter for duct-like airways (corresponds to transitional bronchioles)
     double p0;              // Ambient pressure
     double r;               // Bifurcation parameter
     double eta;             // Bifurcation parameter
@@ -70,6 +55,10 @@ struct controlProperties{
     double dt;              // Time stepping
     double Tend;            // Duration of simulation
     int nbrBreaths;         // Number of breaths
+    int washout;            // type of washout STG-MBW (0); MTG-SBW (1)
+    int species;            // species: 0_2 (0), CO_2 (1), He (2), SF_6 (3), N_2 (4)  - for MBW only
+    double cin;             // Inlet concentration
+    int    bc ;             // Flag for boundary condition for LPM
     double generalCN;       // General Crank Nicolson coefficient
     double CFL;             // CFL number
     int NxDuctMin;          // Minimum number of grid points in ducts

@@ -260,8 +260,7 @@ public:
     // Member functions
     //**********************************************************/
     /// Constructor
-    lung(init *initData, controlProperties *contProp,
-            systemProperties *sysProp, transportProperties *transProp);
+    lung(controlProperties *contProp, systemProperties *sysProp, transportProperties *transProp);
 
     /// Destructor
     ~lung();

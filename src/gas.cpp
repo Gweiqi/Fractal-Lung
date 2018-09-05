@@ -308,7 +308,7 @@ gas::gas(controlProperties *contProp_, systemProperties *sysProp_, bool condAW, 
     // read from sheet
     ifstream inFile;
     DmolMat = MatrixXd::Zero(Nsp,Nsp);
-    inFile.open("data/diffCoeff");
+    inFile.open("constant/diffCoeff");
 
     if (inFile.is_open()){
         for (int i=0; i<Nsp; i++){

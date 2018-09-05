@@ -5,7 +5,37 @@
 %********************* NEW SECTION *********************
 %-------------------------------------------------------
 \section{Environment} \label{sec:Environment}
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+The model is hosted both for development and application in an environment as shown in Table \ref{tab:environment}.
+\begin{table}
+  \centering\small
+  \caption{Different directories and environment of the model}
+  \begin{tabular}{L{0.1\textwidth} L{0.9\textwidth}}
+    \toprule
+    Name           & Content \\
+    \midrule
+    constant       & Constant input files with constant model and simulation parameters parameters used for initialization and construction. Files are usualy defined/set only once for a specific campaigne (several simulations) \\
+    data           & Changign input files such as the inlet flow profile and the parameter modification table. These are files which are usually altered for each single simulation. \\
+                   & Output files (results).\\
+                   & Other files wich results from pre-processing steps. \\
+    scripts        & Several Python scripts used for pre and post processing \\
+    src            & C++ source files of the model \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:environment}
+\end{table}
+
+\subsection{The \textit{constant} directory}
+
+
+\subsection{The \textit{data} directory}
+
+
+\subsection{The \textit{scripts} directory}
+
+
+\subsection{The \textit{src} directory}
+
+\subsubsection{Code compilation}
 
 
 
