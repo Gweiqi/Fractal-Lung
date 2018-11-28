@@ -11,7 +11,7 @@
 
 // Constructor
 //**************************************************************/
-lung::lung(controlProperties *contProp_, systemProperties *sysProp_, transportProperties *transProp_){
+lung::lung(controlProperties *contProp_, systemProperties *sysProp_){
 
     pi = atan(1.0)*4.0;
 
@@ -19,7 +19,6 @@ lung::lung(controlProperties *contProp_, systemProperties *sysProp_, transportPr
     //**********************************************************/
     contProp            = contProp_;
     sysProp             = sysProp_;
-    transProp           = transProp_;
 
 
     // Initialize lung variables and pass values
@@ -49,9 +48,9 @@ lung::lung(controlProperties *contProp_, systemProperties *sysProp_, transportPr
     cin                 = contProp->cin;
     bc                  = contProp->bc;
 
-    // Set transport properties
-    mu                  = transProp->mu;
-    rho                 = transProp->rho;
+    // Set fluid properties
+    mu                  = sysProp->mu;
+    rho                 = sysProp->rho;
 
     // magnification factor for total lobular resistance
     R_fac               = sysProp->R_fac;
@@ -87,7 +86,7 @@ lung::lung(controlProperties *contProp_, systemProperties *sysProp_, transportPr
 
     // Initialize Trachea
     //**********************************************************/
-    pTrachea = new duct(contProp, sysProp, transProp);
+    pTrachea = new duct(contProp, sysProp);
 
     pTrachea->gen = 0;
     pTrachea->ind = 0;
@@ -113,7 +112,7 @@ lung::lung(controlProperties *contProp_, systemProperties *sysProp_, transportPr
 
     // Initialize lobule template
     //**********************************************************/
-    pLbTroot = new lobule(contProp, sysProp, transProp);
+    pLbTroot = new lobule(contProp, sysProp);
 
     // Lobule volume in template
     VLbT = 0;
@@ -163,7 +162,7 @@ lung::~lung(){
     delete[] pAllOutputVariablesLb;
 
     // Create rubber that moves through the duct tree and deletes its branches
-    duct* rubberD = new duct(contProp, sysProp, transProp);
+    duct* rubberD = new duct(contProp, sysProp);
 
     // Deconstruct lung
     deconstructLung(pTrachea, rubberD);
@@ -184,7 +183,7 @@ void lung::deconstructLung(duct* parentDuct, duct* rubberD){
 
         /*
         // Create rubber that moves through the lobule tree and delets its branches
-        lobule* rubberA = new lobule(contProp, sysProp, transProp);
+        lobule* rubberA = new lobule(contProp, sysProp);
 
         // Delete trumpet lobule compartement
         rubberA = parentDuct->pLobule;
@@ -753,7 +752,7 @@ void lung::readTransFact(){
 
     // Check number of lines in in transmissability factor file
     ifstream inFile;
-    inFile.open("data/transFact");
+    inFile.open("constant/transFact");
     string unused;
     nbrLinesTransFact = 0;
     while (!inFile.eof()){
@@ -776,7 +775,7 @@ void lung::readTransFact(){
     TB_max = 10.0;
 
     // Read from text file
-    inFile.open("data/transFact");
+    inFile.open("constant/transFact");
     inFile.clear();
     inFile.seekg(0, ios::beg);
     if (inFile.is_open()){

@@ -9,14 +9,13 @@ using namespace std;
 
 // Constructor
 //**************************************************************/
-lobule::lobule(controlProperties *contProp_, systemProperties *sysProp_, transportProperties *transProp_){
+lobule::lobule(controlProperties *contProp_, systemProperties *sysProp_){
 
 
     // Write class members
     //**********************************************************/
     contProp            = contProp_;
     sysProp             = sysProp_;
-    transProp           = transProp_;
 
     // Read properties from input structs
     lLbm_fac = sysProp->lLbm_fac;

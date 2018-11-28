@@ -25,9 +25,6 @@ public:
     // Pointer on system properties
     systemProperties *sysProp;
 
-    // Pointer on transport properties
-    transportProperties *transProp;
-
     // flags
     bool chebychevcollocation;
     bool promptFlag;

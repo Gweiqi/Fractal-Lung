@@ -1,7 +1,10 @@
-// General inputs
-FRC			0.0030		// functional residual capacity FRC (in m^3)
-p0			101325		// Ambient pressure at mouth
+// Lung capacity (residual lung volume)
+FRC			0.0030		// functional residual capacity FRC (in m^3) used for scaling of the lung
 
+// Fluid parameters
+p0			101325		// Ambient pressure at mouth
+rho			1.225		// Density of air
+mu			18e-6		// Kinematic Viscosity
 
 // Conducting airways parameter
 dLimit			0.0018		// smallest diameter of conducting airways (in m)

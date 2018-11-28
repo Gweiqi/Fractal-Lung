@@ -43,6 +43,8 @@ int main(int argc, char** argv){
     sysProp.dL                  = sysPropIO.lookup("dLimit");
     sysProp.maxGenLb            = sysPropIO.lookup("maxGenLb");
     sysProp.p0                  = sysPropIO.lookup("p0");
+    sysProp.mu                  = sysPropIO.lookup("mu");
+    sysProp.rho                 = sysPropIO.lookup("rho");
     sysProp.lLbm_fac            = sysPropIO.lookup("lLbm_fac");
     sysProp.bending             = sysPropIO.lookup("bending");
     sysProp.r                   = sysPropIO.lookup("r");
@@ -75,19 +77,6 @@ int main(int argc, char** argv){
     contProp.NxDuctMax          = contPropIO.lookup("NxDuctMax");
     contProp.fOutFull           = contPropIO.lookup("fOutFull");
     contProp.writeFull          = contPropIO.lookup("writeFull");
-
-    // Read fluid parameter from external file
-    // (to be provided by constant/transportProperties)
-    //**********************************************************/
-    transportProperties transProp;
-    cout << "\n\nFluid parameters:\n";
-    cout << "*******************************\n";
-    IOdict transPropIO          = IOdict("constant/transportProperties");
-    transPropIO.outputConsole   = 1;
-    transProp.mu                = transPropIO.lookup("mu");
-    transProp.rho               = transPropIO.lookup("rho");
-    transProp.Diff              = transPropIO.lookupVect("D_O2");
-
 
     // Read in number of breaths and sampling frequency
     // (to be provided by data/nbfs)
@@ -181,7 +170,7 @@ int main(int argc, char** argv){
 
     // Call driver for simulation start
     //**********************************************************/
-    driver(allBreathFlow, allBreathResults, contProp, sysProp, transProp);
+    driver(allBreathFlow, allBreathResults, contProp, sysProp);
 
 
     // Write simulated data to file (primary output)

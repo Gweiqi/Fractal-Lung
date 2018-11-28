@@ -9,13 +9,12 @@ using namespace std;
 
 // Constructor
 //**************************************************************/
-duct::duct(controlProperties *contProp_, systemProperties *sysProp_, transportProperties *transProp_){
+duct::duct(controlProperties *contProp_, systemProperties *sysProp_){
 
     // Write class members
     //**********************************************************/
     contProp            = contProp_;
     sysProp             = sysProp_;
-    transProp           = transProp_;
 
     // Initial variables
     endCAW = false;
@@ -88,7 +87,7 @@ void duct::grow(int indA, double* kappaA, double* Phi){
     }
 
     // Add new duct for daughter
-    duct* daughter = new duct(contProp, sysProp, transProp);
+    duct* daughter = new duct(contProp, sysProp);
 
     // Define properties
     daughter->gen = gen+1;
@@ -255,7 +254,7 @@ double duct::getDuctVolume(){
 void duct::connectLobule(bool scalingLbL, lobule* pLbT){
 
     // Create root lobule compartment and size with diameter
-    lobule* rootLobule = new lobule(contProp, sysProp, transProp);
+    lobule* rootLobule = new lobule(contProp, sysProp);
 
     // Initialize from template
     // Set lobule volume

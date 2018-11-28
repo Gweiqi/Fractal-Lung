@@ -9,7 +9,7 @@
 /// Driver prototype
 //**************************************************************/
 void driver(breathFlow* allBreathFlow, breathResults* allBreathResults,
-            controlProperties contProp, systemProperties sysProp, transportProperties transProp);
+            controlProperties contProp, systemProperties sysProp);
 
 
 #endif /* defined(____flDriver__) */

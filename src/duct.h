@@ -24,9 +24,6 @@ public:
     /// Pointer on system properties
     systemProperties *sysProp;
 
-    /// Pointer on transport properties
-    transportProperties *transProp;
-
     /// Bool for end of conducting airways
     bool endCAW;
 
@@ -115,7 +112,7 @@ public:
     // MEMBER FUNCTIONS
     //**********************************************************/
     /// Constructor
-    duct(controlProperties *contProp, systemProperties *sysProp, transportProperties *transProp);
+    duct(controlProperties *contProp, systemProperties *sysProp);
 
     /// Destructor
     ~duct();

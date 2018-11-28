@@ -4,61 +4,247 @@
 
 %********************* NEW SECTION *********************
 %-------------------------------------------------------
-\section{Environment} \label{sec:Environment}
-The model is hosted both for development and application in an environment as shown in Table \ref{tab:environment}.
-\begin{table}
-  \centering\small
-  \caption{Different directories and environment of the model}
-  \begin{tabular}{L{0.1\textwidth} L{0.9\textwidth}}
-    \toprule
-    Name           & Content \\
-    \midrule
-    constant       & Constant input files with constant model and simulation parameters parameters used for initialization and construction. Files are usualy defined/set only once for a specific campaigne (several simulations) \\
-    data           & Changign input files such as the inlet flow profile and the parameter modification table. These are files which are usually altered for each single simulation. \\
-                   & Output files (results).\\
-                   & Other files wich results from pre-processing steps. \\
-    scripts        & Several Python scripts used for pre and post processing \\
-    src            & C++ source files of the model \\
-    \bottomrule
-  \end{tabular}
-  \label{tab:environment}
-\end{table}
+\section{Environment} \label{sec:environment}
+The model is hosted, both for development and application, in an environment with a specific folder structure, which must not be changed. It contains the following directories
+\\ \\
+\begin{tabular}{L{0.25\textwidth} L{0.75\textwidth}}
+  \toprule
+  Dir. name           & Content \\
+  \midrule
+  constant       & Constant input data/files with constant model and simulation parameters parameters used for initialization and construction. Files are usually defined/set only once for a specific campaign (several simulations) \\
+  \midrule
+  data           & Variable input data/files which such as the inlet flow profile and the parameter modification table. These are files which are usually altered for each single simulation. \\
+                 & Output files (results).\\
+                 & Other files wich results from pre-processing steps. \\
+  \midrule
+  scripts        & Several Python scripts used for pre and post processing \\
+  \midrule
+  src            & C++ source files of the model \\
+  \bottomrule
+\end{tabular}
 
-\subsection{The \textit{constant} directory}
+\clearpage
 
+\subsubsection{The \textit{constant} directory}
+The following files are stored in this directory:
+\\ \\
+\begin{tabular}{L{0.25\textwidth} L{0.75\textwidth}}
+  \toprule
+  File name      & Content \\
+  \midrule
+  \texttt{controlDict} & Process settings (washout type, gas species, boundary conditions type) \\
+                       & Settings for the numerical solution method \\
+                       & Output format settings \\
+  \midrule
+  \texttt{dataWeibel}  & Data for airways geometry from \citet{Weibel1963} (currently not dynamically linked to / read by the model) \\
+  \midrule
+  \texttt{diffCoeff}   & look-up table with molecular diffusion coefficients for different species pairing \\
+                       & (O2, CO2, He, SF6, N2) \\
+  \midrule
+  \texttt{systemProperties} & All static (constant) model parameters \\
+  \midrule
+  \texttt{transFact}   & Lookup-table for transmissibility factors from pulsatile flow (Womersley) theory.\\
+                       & This table is precomputed using the script \texttt{pulsatile\_transmissibility.py} in the \textit{scripts} directory (see bellow) \\
+  \bottomrule
+\end{tabular}
 
-\subsection{The \textit{data} directory}
+\clearpage
 
+\subsubsection{The \textit{data} directory}
+The following files are stored in this directory (I: simulation /model input, O: simulation output):
+\\ \\
+\begin{tabular}{L{0.25\textwidth} L{0.75\textwidth}}
+  \toprule
+  File name      & Content \\
+  \midrule
+  \midrule
+  \texttt{inletFlow} (I)  & Flow rate data (one column only) in $\mathrm{m^3}/\mathrm{s}$. \\
+                          & The data is computed using the sripts \texttt{generateFLinputSine.py} or \texttt{generateFLinputSplines.py} (generic), or copied from a actual measurement using the scripts \texttt{generateFLinputFromAFile.py} (SBW data) or \texttt{generateFLinputFromBFile.py} (MBW data). \\
+  \midrule
+  \texttt{modifyLung} (I) & Table containing data for structural and mechanical lung model modifications \\
+                          & The columns refer to ...\\
+                          & first column: duct or lobule absolute index.\\
+                          & second column: transmissibility modification parameter $\xi$ for ducts.\\
+                          & third column: lobular residual volume modification parameter $\theta$\\
+                          & fourth column: lobular compliance modification parameter $\phi$\\
+                          & fifth column: lobular flow resistance modification parameter $\tau$\\
+                          & If the file is empty, no modifications will be applied. \\
+  \midrule
+  \texttt{nbfs} (I)       & Contains two numbers: The number of breaths and the sampling frequency corresponding to \texttt{inletFlow}. \\
+                          & The sampling frequency $f_\mathrm{s}$ also determines the time-step size $\Delta t = 1/f_\mathrm{s}$ used in the simulation. \\
+  \midrule
+  \texttt{pleuralPressure} (I) & Generic data (from \texttt{generateFLinputSplines.py}) for the pleural pressure (one column). \\
+                          & This data is only used when pressure boundary conditions at the periphery are used in the ventilation LPM (via the flag in \texttt{controlDict}) \\
+                          & Important notice: In the current version 1.0 of the model this option has been implemented but not tested yet. \\
+  \midrule
+  \texttt{primary\_results} (O) & Primary (high-level) simulation results that are always outputted. \\
+                          & The columns refer to ... \\
+                          & first column: time in $\mathrm{s}$ \\
+                          & second column: normalized concentration of first tracer gas \\
+                          & third column: normalized concentration of second tracer gas \\
+                          & fourth column: computed (relative) pleural pressure (solution of ventilation LPM) \\
+  \midrule
+  \texttt{TBTVN} (I)      & Table containing breath period $T_\mathrm{B}$  $[\mathrm{s}]$ (first column), tidal volume $V_\mathrm{T}$ $\mathrm{m^3}$, and the number of samples for each breath. \\
+                          & The data corresponds with \texttt{inletFlow} and is automatically computed with the same script (e.g. \texttt{generateFLinputSine.py}). \\
+  \bottomrule
+\end{tabular}
 
-\subsection{The \textit{scripts} directory}
+The following sub-directories are hosted in this directory (I: simulation /model input, O: simulation output):
+\\ \\
+\begin{tabular}{L{0.25\textwidth} L{0.75\textwidth}}
+  \toprule
+  Dir. name      & Content \\
+  \midrule
+  \textit{duct} (O) & Contains secondary output data (full / total lung model output), i.e. nodal data for several quantities within the discretized network of duct-like airways \\
+                 & The following quantities are outputted ... \\
+                 & Duct index number; velocity, pressure, gas concentrations, duct (airway) radius. \\
+                 & The data is written / outputted only if the corresponding flag in the \texttt{controlDict} file is set. \\
+                 & The output frequency, i.e. for which time-step the full output is stored is also defined in \texttt{controlDict}. The file format is \texttt(VTK). One file per time-step is stored. \\
+  \midrule
+  \textit{lobule} (O) & Contains secondary output data (full / total lung model output), i.e. nodal data for several quantities for each trumpet lobule \\
+                 & The following quantities are outputted ... \\
+                 & Lobule index number; velocity, gas concentrations, trumpet lobule radius, relative dilatation, pleural pressure \\
+                 & The data is written / outputted only if the corresponding flag in the \texttt{controlDict} file is set. \\
+                 & The output frequency, i.e. for which time-step the full output is stored is also defined in \texttt{controlDict}. The file format is \texttt(VTK). One file per time-step is stored. \\
+  \midrule
+  \textit{lufu} (I) & contains the A-Files (SBW) and B-Files (MBW) from which the flow rate data is copied if no generic flow rate profile is used. \\
+  \bottomrule
+\end{tabular}
 
+\clearpage
 
-\subsection{The \textit{src} directory}
+\subsubsection{The \textit{scripts} directory}
+The following scripts are hosted in this directory (PRE: for pre-processing, PST: for post-processing):
+\\ \\
+\begin{tabular}{L{0.4\textwidth} L{0.6\textwidth}}
+  \toprule
+  Script name          & Function \\
+  \midrule
+  \texttt{dilatation\_map.py} (PST) & Script to visualize the dilatation of the trumpet lobules as a function of time. \\
+  \midrule
+  \texttt{generateFLinputFromAFile.py} (PRE) & Extracts the flow rate data from actual SBW measurements (i.e. an A-File), generates the input data \texttt{inletFlow}, \texttt{nbfs}, and \texttt{TBTVN}, and stores them in the \textit{data} directory. \\
+                                             & Here, the sampling frequency $f_\mathrm{s}$, i.e. the inverse of the time-step $\Delta t$ is defined. \\
+  \midrule
+  \texttt{generateFLinputFromBFile.py} (PRE) & Extracts the flow rate data from actual MBW measurements (i.e. an B-File), generates the input data \texttt{inletFlow}, \texttt{nbfs}, and \texttt{TBTVN}, and stores them in the \textit{data} directory. \\
+                                             & Here, the sampling frequency $f_\mathrm{s}$, i.e. the inverse of the time-step $\Delta t$ is defined. \\
+  \midrule
+  \texttt{generateFLinputSine.py} (PRE) & Computes generic flow rate data, generates the input data \texttt{inletFlow}, \texttt{nbfs}, and \texttt{TBTVN}, and stores them in the \textit{data} directory. \\
+                                        & Here, the sampling frequency $f_\mathrm{s}$, i.e. the inverse of the time-step $\Delta t$, the tidal volume and the number of breaths are defined. \\
+  \midrule
+  \texttt{generateFLinputSpline.py} (PRE) & Computes generic flow rate and pleural pressure data, generates the input data \texttt{inletFlow}, \texttt{nbfs}, and \texttt{TBTVN}, and stores them in the \textit{data} directory. \\
+                                          & Here, the sampling frequency $f_\mathrm{s}$, i.e. the inverse of the time-step $\Delta t$, the tidal volume, the number of breaths, and the breath profile asymmetry (different durations of inspiration and expiration) are defined. \\
+  \midrule
+  \texttt{genModifyLung.py} (PRE)   & Definition of lung model modification parameters, i.e. which ducts or lobules are modified and how they are modified. \\
+  \midrule
+  \texttt{pulsatile\_transmissibility.py} (PRE) & Computes a table with factors $\in[0,1]$ used to change the transmissibility to account for inertial effects in pulsatile flow. \\
+                                         & The table is stored as \texttt{transFact} in the \textit{constant} directory. \\
+  \midrule
+  \texttt{results.py} (PST)              & Visualization of the primary results, i.e. normalized gas concentration (washout profile) and pleural pressure evolution. \\
+  \bottomrule
+\end{tabular}
 
-\subsubsection{Code compilation}
+\subsubsection{The \textit{src} directory}
+The following source files are hosted in this directory:
+\\ \\
+\begin{tabular}{L{0.25\textwidth} L{0.75\textwidth}}
+  \toprule
+  File name          & Description \\
+  \midrule
+  \texttt{main.cpp}           & Dynamic input / output handling; storage allocation; driver call. \\
+  \midrule
+  \texttt{flDriver.cpp}       & Procedural calls for model construction, model modification, simulation. \\
+  \midrule
+  \texttt{lung.cpp}           & Lung-object with all lung-level member variables and instances. \\
+  \midrule
+  \texttt{duct.cpp}           & Duct-object with all duct-level member variables and instances. \\
+  \midrule
+  \texttt{lobule.cpp}         & Lobule-object with all lobule-level member variables and instances. \\
+  \midrule
+  \texttt{gas.cpp}            & Gas-object (species-object) with all gas-level member variables and instances. \\
+  \midrule
+  \texttt{IOdict.cpp}         & Object for data input / output handling. \\
+  \midrule
+  \texttt{visit\_writer.cpp}  & Function for writing vtk-data format (from VisIt LLNL source code) \\
+  \bottomrule
+\end{tabular}
 
 
 
 %********************* NEW SECTION *********************
 %-------------------------------------------------------
 \section{Pre-processing} \label{sec:preprocessing}
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+Besides the various parameter input files in \textit{constant}, the main inputs for the model are the flow profile (\texttt{inletFlow}) at the mouth and a table (\texttt{modifyLung}) containing the values of the modification parameters applied to a specific airway unit (duct-like airway or trumpet lobule).
+Alongside with the flow profile the duration of the simulation (number of simulated breaths), and the tidal volume $V_\mathrm{T}$ and the breath period of each breath are defined.
+Moreover, the sampling frequency $f_\mathrm{s}$ of the flow signal directly defines the time-step size ($\Delta t = 1/f_\mathrm{s}$) used in the model simulation.
 
+\subsubsection{Flow profile and related quantities}
+The flow profile can either be read from an actual A-File or B-File, and prepared (cropped and resampled wit $f_\mathrm{s}$), or it can be generated based on a sine-function or using splines.
+For each different approach, a separate Python-script in the sub-folder $\textit{sripts}$ is prepared and when run handles all the needed computations.
+For instance, the script \texttt{generateFLinputSine.py} defines a generic sine-shaped flow rate profile. At the beginning of the script, the needed parameters have to be defined (i.e. number of breaths, time-step size / sampling frequency, tidal volume, breath period).
+The profile (i.e the file \texttt{inletFlow}) is then stored in the \textit{data} sub-folder.
+In case the flow rate profile is taken from an A/B-File, this File has to be stored previously in the corresponding \textit{data/lufu} sub-folder.
+Besids the flow profile, separat files, one containing a table where the breath period the tidal volume and the number of data points are listed, another containing only two values for the total number of breaths and for the sampling frequency, are stored in the \textit{data} sub-folder, when one of the \texttt{generateFLinput*.py} scripts is executed.
+Note: The spline-based generic flow profile is used for asymmetric (but regular) flow profiles, meaning that duration of inspiration and expiration are different.
+For this option, an additional signal for the pleural pressure is generate, which can be used in conjunction with different types of model boundary conditions.
+Although the pre-processing (i.e. the corresponding script \texttt{generateFLinputSplines.py}) works, the use of asymmetric flow profiles or pleural pressure boundary conditions has not yet been tested with the model.
+
+\subsubsection{Modification parameters}
+The modification parameter table is computed with the script \texttt{genModifyLung.py}.
+The different modification parameters and their meanings are listed in table \ref{tab:modification_parameter}.
+The total number of airway units which are modified, has to be defined in the script.
+This number should not be higher than the total number of ducts or lobules generated in the model, which on the other hand depends on the values set for $d_\mathrm{lim}$ in the \texttt{systemProperties} file.
+For a specific set of modifications, i.e. which unit is affected (via airway ID), which value is set for the modification parameters (for duct transmissibility $\xi$, for lobule residual volume $\theta$, for lobule compliance $\phi$, or for lobular flow resistance $\tau$), has to be implemented by the user.
+There exists the possibility to define a subset of units which are modified in the same manner, or to define the parameter values using statistical distributions functions.
+After the script has been executed, the table (\texttt{modifyLung}) is stored in the \textit{data} subfolder.
+
+The \texttt{genModifyLung.py} script is used to automatically create a modification parameter table according to specific rules and/or distribution function.
+However, it is also possible to generate or adapted a table by hand, for instance in case only airway units ought to be modified.
+It is in this case important to preserve the structure of the table, i.e. the order of the parameters, and although an unmodified airway unit does not have to be listed, as soon as one of it's parameters is modified (e.g. not equal $1$) the other parameters have to be listed, whether they are modified or not.
+
+\begin{table}
+  \caption{Modification parameter, their meaning and typical numerical ranges}
+  \begin{tabular}{L{0.1\textwidth} L{0.7\textwidth} C{0.1\textwidth}}
+    \toprule
+    Param.             & Description  & Typ. range \\
+    \midrule
+    $\xi$              & Reduces the transmissibility (inverse of flow resistance $T = 1/R$) to a certain fraction. Transmissibility is proportional to the diameter to the power of four ($T\sim d^4$). This means that a parameter value of $0.5$ corresponds to airway obstruction of approximately $16\%$. Note: to small parameter values applied to numerous airways might cause numerical issues during simulation run & $[0.5, 1]$ \\
+    \midrule
+    $\theta$           & Scales the residual volume of a trumpet lobuel. A parameter value of $\phi = 0.5$ and $\phi = 1.5$ causes the lobule volume to be reduced, respectively increase to $50\%$ and $150\%$ of the nominal residual volume resulting from the FRC and the total number of lobules. (For more details see Section \ref{sec:model_modifications}) & $[0.5, 1.5]$ \\
+    \midrule
+    $\phi$             & Reduces or increases the lobular compliance. (For more details see Section \ref{sec:model_modifications}) & $[0.5, 1.5]$ \\
+    \midrule
+    $\tau$             & Increases the total flow resistance within a trumpet lobule. (For more details see Section \ref{sec:model_modifications}) & $[1, 10]$ \\
+    \bottomrule
+    \label{tab:modification_parameter}
+  \end{tabular}
+
+\end{table}
+
+
+\subsubsection{Pulsatile transmissibility}
+The script \texttt(pulsatile\_transmissibility.py) computes the look-up table for the pulsatile transmissibility factors based on Womersley's \citep{Womersley1957} theory, which is stored in the \textit{constant} sub-folder.
+The data in this table remains the same for practically all simulations.
+It is therefore usually not needed to run the script nor to make any changes to it.
 
 %****************** new sub-section ********************
-\subsection{Parameter settings} \label{ssec:parameter_settingss}
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+\subsection{Code compilation} \label{ssec:code_compilation}
+The compilation of the C++ source files has to be done on each OS and Computer separately.
 
+In a UNIX environments the make file provided in the \textit{src}-subfolder can be used for comilation
+To this end, simply open a terminal (in the directory containing the source :), and use the command \textit{make}.
+Then use \textit{make moveup} to move the compiled code to its natural habitat (one directory up).
+Optionally, you can clean up the directory with \textit{make clean}.
+
+On Windows it is recommended to use the Code::Blocks IDE (www.codebloks.org) and integrate the C++ source files in an dedicated project.
+
+Note: To get the needed compiler on Mac, donload Xcode. On Linux, get GCC 4.8.5 or higher. Using Code::Blocks the compiler options have to be set via the toolbar of the IDE.
 
 %****************** new sub-section ********************
-\subsection{Input files} \label{ssec:input_files}
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-\begin{description}
-  \item inlet flow rate
-  \item pleural pressure
-  \item modification setting
-\end{description}
-
+\subsection{System and control parameter settings} \label{ssec:parameter_settingss}
+Most of the time, the majority of the system and control parameters hosted in \texttt{systemProperties} and \texttt{controlDict} (\textit{constant} sub-folder) remain constant within a run of multiple simulations, while typically the modification parameters (\texttt{modifyLung}) and/or the flow profile (\texttt{lung}) are altered.
+An exception are the prescribed FRC (both in )
+In general, however, system and control parameters should only be changed, if the user is awar of their meaning and implication to the simulation.
+A brief description is provided for each parameter.
 
 
 %********************* NEW SECTION *********************

@@ -59,7 +59,10 @@ For the duct-like airways purely resistive elements were used.
 During normal breathing, airflow in the lung is unsteady and inertia plays a considerable role regarding the flow resistance in bigger airways until the tenth generation \citep{Kaczka2011}.
 The theory by \citet{Womersley1957} for pulsatile flow in tubes was therefore applied.
 In general, the pressure difference between two subsequent nodes with node index $i$ and $j$ in the network reads.
-Here $Q_{ij}$ is the flow rate in direction of the negative pressure gradient, and the hydrodynamic resistance $R_{ij}$ depends on the radius $r_{ij}$ and the length $l_{ij}$ of the conducting airway between two nodes, and on the breath period $\mathrm{TB}$.
+\begin{equation} \label{eqn:pulsatile_flow_resistance}
+p_i - p_j = R_{ij} Q_{ij}\cc \quad{\mathrm{with}}\quad R_{ij} = \Re\left\{\frac{\i \omega \rho l_{ij}}{r_{ij}^2 \pi}\left[1-\frac{2\mathsf{J_1}(\i^{3/2}\alpha)}{\i^{3/2}\alpha \mathsf{J_2}(\i^{3/2}\alpha)}\right]^{-1}\right\} \pp
+\end{equation}
+Here $Q_{ij}$ is the flow rate in direction of the negative pressure gradient, and the hydrodynamic resistance $R_{ij}$ depends on the radius $r_{ij}$ and the length $l_{ij}$ of the conducting airway between two nodes, and on the breath period $T_\mathrm{B}$.
 
 \begin{figure}[tb]
 \centering
@@ -203,8 +206,7 @@ A transport equation of the following general form is considered
 \end{equation}
 Here, we distinguished between the total cross-section $S(x,t)$ and the cross-section $S_\mathrm{ad}$ where advection with the carrier gas velocity $u(x,t)$ takes place.
 At bifurcations the concentration flux has to be conserved $\sum F = 0$.
-The geometry of the trumpet lobule $S_\lb(x,t)$ (derived in Section \ref{ssec:trumpet_lobule_geometry}) allows a more specific form of Equation (\ref{eqn:transportEquation}) to be stated for the gas transport within trumpet lobules with non-constant cross-section (see \label{ssec:modified_advection_diffusion_equation}).
-
+The geometry of the trumpet lobule $S_\lb(x,t)$ (derived in Section \ref{ssec:trumpet_lobule_geometry}) allows a more specific form of Equation (\ref{eqn:transportEquation}) to be stated for the gas transport within trumpet lobules with non-constant cross-section (see upcoming section).
 
 
 \subsubsection{Modified advection-diffusion equation} \label{ssec:modified_advection_diffusion_equation}
@@ -250,27 +252,29 @@ The transport equation (Equ. 6 and 7 in the main article) together with the cont
 In summary, equations (\ref{eqn:advectionDiffusionDuct}) and (\ref{eqn:advectionDiffusionTrumpet}) describe the gas transport in duct,
 respectively trumpet-type airway models and equations (\ref{eqn:crosssectionModel}) and (\ref{eqn:flowRateTrumpet}) together with (\ref{eqn:shapeParameter}) describe the dynamics of the trumpet model.
 The system is coupled with the ventilation LPM through the average flow velocity in each duct and into each trumpet.
-The numerical solution method for the LPM and for the advection-diffusion equation are presented in S2\_Appendix and S3\_Appendix, respectively.
+The numerical solution method for the LPM and for the advection-diffusion equation are presented in Section \ref{sec:numerical_implementation}.
 
 
 
 %********************* NEW SECTION *********************
 %-------------------------------------------------------
 \section{Model modifications} \label{sec:model_modifications}
-An important application of the lung model is to simulate the effects of different functional and structural inhomogeneities within the lung.
+An important application of the lung model is to simulate the effects of different functional and structural inhomogeneities on the gas transport process within the lung.
 I.e. non-uniform tissue compliance, non-uniform size of airway units (e.g. lobules, acini), and non-uniform flow resistance in small airways, affecting different parts of the lung.
 
 \paragraph{Lobule Compliance: }
 Tissue compliance can be tuned with the modification parameter $\phi$, which is used to define the shape parameter $\beta$ and $\gamma$ in Equation (\ref{eqn:constitutiveLaw}).
-To this end we considered a mean lobular tidal volume $V_\lb^{TV} = TV/N_\lb$, where $TV$ is the tidal volume, and $N_\lb$ is the total number of trumpet-lobules.
-The elastic component of the lobule mechanics can be called stiff if its maximum dynamic volume is smaller than $V_\lb^{TV}$, and soft otherwise.
-The elastic pressure curve for lobules with distinct compliance is shown in Figure \ref{fig:lobuleMechanics}, where the shape parameter $\beta$ was defined as
+To this end, a mean lobular tidal volume $V_\lb^{TV} = V_\mathrm{T}/N_\lb$ is considered, where $V_\mathrm{T}$ is the tidal volume, and $N_\lb$ is the total number of trumpet lobules.
+Then the nominal lobule volume range is defined $[V_\lb^0, V_\lb^0+V_\lb^\mathrm{TV}]$.
+Furthermore, a reference pressure amplitude $p_\lb^\mathrm{TV} = 1500\;\unit{Pa}$ is considered, which corresponds to a typical pressure range in the pleural gap (pleural pressure).
+For a given pressure load $p_\lb^\mathrm{TV}$, the elastic component of the lobule mechanics can be considered stiff (reduced compliance) if its maximum dynamic volume is smaller than $V_\lb^\mathrm{TV}$, and soft (increased compliance) otherwise.
+In Figure \ref{fig:nonlinearLobule} (a), the elastic pressure curve (see Equation \ref{eqn:constitutiveLaw}) for a lobule is shown assuming different values of $\phi$, which effectively modify the curve via the shape parameter $\beta$ as
 \begin{equation} \label{eqn:compliance_modification}
 \beta = \frac{p_\mathrm{lb}^{TV}}{\e^{\gamma V_\mathrm{lb}^0}(\e^{\gamma \phi V_\mathrm{lb}^{TV}} - 1)} \cc
 \end{equation}
-For instance, $\phi = 0.5, 1.0, 1.5$ can be used for a stiff, normal and compliant trumpet-lobule, respectively.
-In the scaling of $\beta$ (Equation (\ref{eqn:compliance_modification})), a reference pressure amplitude $p_\lb^{TV} = 1500 \unit{Pa}$ can be assumed, which corresponds to a typical pressure range introduced by the pleural pressure.
-The remaining shape parameter $\gamma$ accounts for the non-linearity of the elastic pressure law and is defined based on a point in the volume-pressure plane $(V_\lb^0 + 3/4\phi V_\lb^{TV}, 1/4 p_\lb^{TV})$, which has to be satisfied by equation (Equation (\ref{eqn:constitutiveLaw})).
+The remaining shape parameter $\gamma$ accounts for the non-linearity of the elastic pressure curve (see Figure \ref{fig:nonlinearLobule} (b) and was computed such that the elastic pressure curve intersects with the point $(V_\lb^0 + 3/4\phi V_\lb^\mathrm{TV}, \; 1/4 p_\lb^\mathrm{TV})$ in the volume-pressure plane.
+For this point, the resulting curve qualitatively lies between a linear and an almost right-angled curve.
+
 
 \paragraph{Lobule Volume: }
 The modification parameter $\theta$ is used to modify the residual volume of a trumpet lobule as ${V_\lb^0}_\mathrm{mod} = \theta V_\lb^{0}$.
@@ -278,39 +282,27 @@ The modification parameter $\theta$ is used to modify the residual volume of a t
 \paragraph{Lobule Resistance: }
 The hydrodynamic flow resistance within a specific trumpet-lobule, i.e. $R_\lb$, can be changed via the modification parameter $\tau$, causing a modified pressure loss as ${p_\mathrm{diss}}_\mathrm{mod}$.
 Here, the $\tau>1$ acts as a multiplier of the lobular flow resistance, hence modelling the obstruction of airways in a lobule, e.g. due to mucus formation.
-\begin{figure}[htb]
+\begin{figure}[!t]
   \centering
-  \includegraphics[width=0.5\textwidth]{figures/lobule_mechanics}
-  \caption{Elastic pressure for a stiff (dash-dotted line), medium (solid line) and soft (dashed line) trumpet-lobule. Grey zone indicates range of transacinar pressure resulting from typical pleural pressure.}
-  \label{fig:lobuleMechanics}
+  \includegraphics[width=1.0\textwidth]{figures/nonlinear_lobule}
+  \caption{Elastic pressure $p_\mathrm{el}$ as defined in Equation \ref{eqn:constitutiveLaw}. The purple area indicates the reference pleural pressure range $[0, p_\lb^\mathrm{TV}]$ and the peach area indicates the nominal lobule volume range $[V_\lb^0, V_\lb^0+V_\lb^\mathrm{TV}]$. In panel (a) the influence of the compliance modification parameter $\phi\in[0.5, 1.5]$ is shown.
+  For $\phi=1$ (solid line) the elastic pressure curve intersects in the point $(V_\lb^0 + V_\lb^\mathrm{TV}, p_\lb^\mathrm{TV})$.
+  In panel (b) the effect of the non-linearity parameter $\gamma$ is shown. The parameter is chosen such that the elastic pressure curve intersects with the point $[V_\lb^0+3/4\phi V_\lb, 1/4 p_\lb^\mathrm{TV}]$ (black dot). Note that for all graphs in panel (b) $\phi=1$ was used.}
+  \label{fig:nonlinearLobule}
 \end{figure}
 
 
-\subsection{Distribution of the modification parameters}
-In the analysis of structural inhomogeneities it can be distinguished between global, regional, and local differences in the lung structure, i.e. in the modification parameters acting on the mechanical and geometrical properties of the lung model.
-In the case of global type inhomogeneities, the lung modification parameters ($\phi$, $\theta$, $\tau$) are specified for all trumpet modules in the entire model.
-Thereby, the parameters are sampled either from a log-normal distribution (global I), where the variability is set based on the mean and the standard deviation ($\sigma$) of the normal distribution of the parameter, or from a linear function returning increasing values from one element to the next within a specified range $\hat\sigma$ (global II).
-For regional type inhomogeneities, lung modification parameters are set to specific values for a certain fraction of all trumpet lobules.
-Thereby, all affected units lie in the same region, although they do not necessarily share a common bronchiole, with respect to the morphology of the model lung.
-Local type inhomogeneities are defined in a similar way as regional type inhomogeneities with the difference that the subsets of modified units are distributed uniformly across the lung model.
 
 
 %********************* NEW SECTION *********************
 %-------------------------------------------------------
 \section{Numerical implementation} \label{sec:numerical_implementation}
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-
 
 %****************** new sub-section ********************
 \subsection{Ventilaton lumped parameter model} \label{ssec:ventilation}
 \subsubsection{Duct-like airways}
-Regarding airflow in duct-like airways, we applied Womersley's theory for pulsatile flow in tubes \cite{Womersley1957}.
-For this case, the pressure difference between two subsequent nodes with index $i$ and $j$ in the network reads,
-\begin{equation}
-p_i - p_j = R_{ij} Q_{ij}\cc \quad{\mathrm{with}}\quad R_{ij} = \Re\left\{\frac{\i \omega \rho l_{ij}}{r_{ij}^2 \pi}\left[1-\frac{2\mathsf{J_1}(\i^{3/2}\alpha)}{\i^{3/2}\alpha \mathsf{J_2}(\i^{3/2}\alpha)}\right]^{-1}\right\} \pp
-\end{equation}
-Here, $R_{ij}$ is the hydrodynamic resistance and $Q_{ij}$ the flow rate in the conducting airway between nodes $i$ and $j$; $\alpha = r_{ij}\sqrt{\omega\rho/\mu}$ is known as the Womersley number, $\omega = 2\pi/T_\mathrm{B}$ is the breathing frequency related to the breath period $T_\mathrm{B}$; $r_{ij}$ and $l_{ij}$ are the radius and the length, respectivel, of the conducting airway; $\mu$ is the dynamic viscosity, and $\rho$ the density of air; and $\i = \sqrt{-1}$.
-
+Regarding airflow in duct-like airways, we applied Womersley's theory for pulsatile flow in tubes \citep{Womersley1957}.
+For this case, the pressure difference between two subsequent nodes with index $i$ and $j$ can be computed from the analytical expression given in Equation \ref{eqn:pulsatile_flow_resistance}.
 To save computation time in the simulations, the resistance $R_{ij}$ is interpolated from a previously computed table for different diameters and breath periods.
 
 \subsubsection{Compliant trumpet lobules}
@@ -409,11 +401,11 @@ The 1D-advection-diffusion equation governs the evolution of the gas concentrati
 \frac{\partial c}{\partial t} = -\underbrace{u\frac{\partial c}{\partial x}}_{\text{\footnotesize{advection}}} + \underbrace{D\frac{\partial^2 c}{\partial x^2}}_{\text{\footnotesize{diffusion}}}
 \end{equation}
 
-In the lung model the velocity $u$ was computed by means of a lumped parameter (0D) model for the ventilation of all model airway (see S1\_Appendix), and the diffusion coefficient $D$, given the properties of both the carrier gas and the inert tracer gas, was computed using Chapman-Enskog equation.
+In the lung model the velocity $u$ was computed by means of a lumped parameter (0D) model for the ventilation of all model airway, and the diffusion coefficient $D$, given the properties of both the carrier gas and the inert tracer gas, was computed using Chapman-Enskog equation.
 In addition, $D$ was modified to account for Taylor's dispersion (see \cite{Cussler2009}).
 For the discretization of Equation (\ref{eqn:advection_diffusion}) the advection velocity $u$ was assumed to be constant within a duct-like airway.
 Transport phenomena related to spacial velocity gradients at the bifurcations are not considered.
-In trumpet lobules, the non-constant cross-section lead to a modified advection velocity $\hat u$ (see Appendix\_S01).
+In trumpet lobules, the non-constant cross-section lead to a modified advection velocity $\hat{u}$ (see Section \ref{ssec:modified_advection_diffusion_equation}).
 Otherwise the numerical treatment was the same for duct-like airways and trumpet lobules.
 A duct or trumpet lobule was discretized into $N$ elements and hence Equation (\ref{eqn:advection_diffusion}) is evaluated on $N+1$ nodes, where $N$ can be different for each airway.
 The avection-diffuison equation (\ref{eqn:advection_diffusion}) was discretized applying a second order upwind scheme and a second order central scheme for the spatial discretization of the advection term and the diffusion term, respectively, and using a generalized Crank-Nicolsen scheme for the temporal discretization.
@@ -537,7 +529,7 @@ Considering a given time step $\Delta t$, the number of elements of a 1D mesh of
 where $CFL=1.0$ was used for all simulations.
 
 If faster advection velocities (e.g. during peak inspiration or expiration) causes the number of elements to drop bellow a defined minimal number
-$N_\mathrm{min}$, a time-step refinement $\Delta t / n_\mathrm{tsr}$ was activated, which was computed as
+$N_\mathrm{min}$, a time-step refinement (TSR) $\Delta t / n_\mathrm{tsr}$ was activated, which was computed as
 \begin{equation}
   n_\mathrm{tsr} = \frac{u \Delta t N_\mathrm{min}}{l\;CFL}
 \end{equation}
@@ -548,11 +540,10 @@ The refined time-step $\Delta t / n_\mathrm{tsr}$ was then used for the numerica
 %********************* NEW SECTION *********************
 %-------------------------------------------------------
 \section{Code structure} \label{sec:code_structure}
-The computer code is implemented in C++.
-The computer code consists of four objects (classes) (\texttt{lung.cpp}, \texttt{duct.cpp}, \texttt{lobule.cpp}, \texttt{gas.cpp}) which constitute the lung model.
+The computer code is implemented in C++ and consists of four objects (classes) (\texttt{lung.cpp}, \texttt{duct.cpp}, \texttt{lobule.cpp}, \texttt{gas.cpp}) which constitute the lung model.
 The remaining source files relate to the procedural aspects of the simulation and data handling.
 An overview of the whole environment of the model is explained in more detail in Section \ref{sec:environment} in the upcoming chapter.
-Here, the main procedural structure of the solver, wich are defined in \texttt{main.cpp} and \texttt{flDriver.cpp}, are outlined, and the architecture of the lung model is shown schematically.
+Here, the main procedural structure of the solver, wich are defined in \texttt{main.cpp} and \texttt{flDriver.cpp}, are outlined, and the architecture of the lung model is shown schematically (see Figure \ref{fig:model_architecture}).
 
 \subsubsection{Input / Output}
 Reading and writing of input, respectively output data is defined in \texttt{main.cpp}, which also contains the simulation start command via the
@@ -560,36 +551,36 @@ call of a driver.
 The structure is as follows:
 \begin{itemize}
   \item Reading system (model) parameters and simulation control parameters from input files.
-  \item Dynamically allocate and stock containers for these parameteres.
-  \item Dynamically allocate (no stocking yet) containers for simulation outputs / results.
+  \item Dynamically allocate and fill (define) containers for these parameters.
+  \item Dynamically allocate (no filling yet) containers for simulation outputs / results.
   \item Call of driver for simulation.
-  \item Write output containters to local environment.
+  \item Write output containers to local environment.
 \end{itemize}
 
-\subsubsection{Model built \& simulation}
-The driver \texttt{flDriver.cpp} called in \texttt{main.cpp} first builds the model accoring to a parametrized fractal morphology and initializes its member variables.
+\subsubsection{Model construction \& simulation}
+The driver \texttt{flDriver.cpp} called in \texttt{main.cpp} first constructs (builds) the model according to a parametrized fractal morphology and initializes its member variables.
 After this the simulation time loop is started in which the different (per-time-step) numerical commands are called.
 The structure is as follows:
 \begin{itemize}
-  \item Construct lung object (see model architecture bellow).
+  \item Construct lung object (see model architecture in Figure \ref{fig:model_architecture}).
   \item Generate fractal tree of duct-like airways.
   \item Generate / Add trumpet-lobules at the end of each terminal duct.
-  \item Pass input data (e.g. flow rate profile, breath periode) to lung model.
-  \item Read and apply lung modification instructions (e.g. for lobular compliance modification $\phi$)
+  \item Pass input data (e.g. flow rate profile, breath period) to lung model.
+  \item Read and apply lung modification instructions (e.g. for lobular compliance modification via parameter $\phi$)
   \item Allocate / Initialize vectors and matrices for ventilation LPM (linear system).
   \item Define gridsize.
   \item Setup gas object.
   \item Start time loop:
   \begin{itemize}
-    \item Reset breath period if necessary.
-    \item Compute time step refinement (TSR).
+    \item Re-define breath period if necessary.
+    \item Compute TSR.
     \item Start inner loop (according to TSR):
     \begin{itemize}
       \item Write entries in system matrix and right-hand side vector for ventilation LPM.
       \item Solve for pressure and distribute to nodes in LPM.
-      \item Compue flow rate in each duct-like airway.
+      \item Compute flow rate in each duct-like airway.
       \item Update trumpet-lobule dynamics.
-      \item Update concentration in 1D domains (domain decomposition approach).
+      \item Successively update concentration in 1D domains (domain decomposition approach).
     \end{itemize}
     \item Write results of current time step to output data containers.
   \end{itemize}
@@ -597,14 +588,21 @@ The structure is as follows:
 
 
 \subsubsection{Model architecture}
-The numerical model of the lung consits of four different objects: The lung-object (\texttt{lung.cpp}) governs the construction of the model and the all calls of numerical computations within the different lung units (i.e. ducts and lobules).
-Computations or data passing that are applied to all (or certain) lung units, a recursive implementation is chosen.
+\begin{figure}[tb!]
+\centering
+\includegraphics[width=\textwidth]{figures/model_architecture}
+\caption{Architecture of the lung model. Each object (lung, duct, lobule, gas) is connected by pointers (e.g \textit{pMajorDaughter}) with neighboring objects, i.e. lung units within the model. Operations are executed in a recursive manner starting at the duct representing the trachea. In addition each element in the airways tree (ducts and lobules) are asociated with a gas object (via \textit{pSpecies}). Note: For sake of a better visibility the connection from a daugher duct to its parent duct, i.e. \textit{pParent}, is not shown.}
+\label{fig:model_architecture}
+\end{figure}
+
+The numerical model of the lung consists of four different objects: The lung-object (\texttt{lung.cpp}) governs the construction of the model and all calls of different operations (e.g. numerical computations) within the different lung units, i.e. ducts and lobules.
+For computational or data transfer operations that are applied to all (or certain) lung units, a recursive implementation is chosen.
 E.g. the rules to grow (or stop growing) daughter ducts according to Equation (\ref{eqn:bifurcationRule}) are the same for all ducts.
-Therefore it is handy to implement only the rule and then apply it via recursion to all ducts and lobules withing the tree-like morphology
+Therefore it is handy to implement only the rule and then apply it via recursion to all ducts and lobules within the tree-like morphology.
 This concept is applied for many operational steps of the model.
-The strict implementation of recursion for this type of domain morphology also assures that the domains are scaned / traveled in a predefined manner, which eases the right allocations of different units or nodes.
+The strict implementation of recursive functions for this type of domain morphology also assures that the domains are scanned / traveled in a predefined manner, which eases the right allocations of different units or nodes.
 The lung-object points (via pointer \textit{pTrachea}) on a fractal tree of duct-objets (\texttt{duct.cpp}).
 A duct-like airways is connected (via pointers \textit{pParent}, \textit{pMinoDaughter}, \textit{pMajorDaughter}) to the neighoring branches (ducts).
-Terminal ducts (defined by $d_\mathrm{Lim}$) are connected to a lobule-object (\texttt{lobule.cpp}, via pointer \textit{pMinoDaughter})
-Each duct and lobule is associated with a proper gas object.
-A Schematics of this architecture is shown in Figure ...
+Terminal ducts (defined by $d_\mathrm{Lim}$) are connected to a lobule-object (\texttt{lobule.cpp}, via pointer \textit{pLobule})
+Each duct and lobule is associated with a proper gas object via \textit{pSpecies}.
+A schematics of this architecture is shown in Figure \ref{fig:model_architecture}.

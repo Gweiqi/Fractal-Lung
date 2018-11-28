@@ -26,6 +26,8 @@ struct systemProperties{
     double FRC;             // Functional residual capacity FRC [in m^3]
     double dL;              // Limit diameter for duct-like airways (corresponds to transitional bronchioles)
     double p0;              // Ambient pressure
+    double rho;             // Density [kg/m^3]
+    double mu;              // Dynamic viscosity [Pa*s]
     double r;               // Bifurcation parameter
     double eta;             // Bifurcation parameter
     double kappa;           // Homothety in trumpet lobule
@@ -36,17 +38,9 @@ struct systemProperties{
     double z_star;          // generation at which model cross-section intersects with exponential growth
     double R_fac;           // Magnification factor for total lobular resistance
     double Diff_fac;        // Modification factor for molecular diffusion coefficient
-    int    scalingLbL;       // trumpet lobule scaling
+    int    scalingLbL;      // trumpet lobule scaling
 };
 
-
-/// Struct containing transport properties
-//**************************************************************/
-struct transportProperties{
-    vector<double> Diff;    // Vector with diffusion coefficient for 1 carrier species [m^2/s]
-    double rho;             // Density [kg/m^3]
-    double mu;              // Dynamic viscosity [Pa*s]
-};
 
 
 /// Struct containing solver properties

@@ -36,14 +36,14 @@ from scipy.optimize import minimize
 # number of breaths to be analyzed
 nbr = 1
 
-# time-step => inverse of sampling frequency of 'InletFlow'
+# time-step (seconds) => inverse of sampling frequency of 'InletFlow'
 dt = 0.001
 
-# breath period
+# breath period (seconds)
 tb = 3.2
 TB = tb*np.ones(nbr)
 
-# tidal volume
+# tidal volume (m^3)
 tv = 0.0005
 TV = tv*np.ones(nbr)
 

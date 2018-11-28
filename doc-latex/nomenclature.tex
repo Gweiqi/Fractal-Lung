@@ -3,7 +3,7 @@
 % ------------------------------------------------
 % File Name: nomanclature.tex
 % Root File: report.tex
-% Author:    David Hasler, Mario Weder
+% Author:    David Hasler
 % Date:      2016-01-03
 % Institute: ARTORG Center for Biomedical Engineering
 % ------------------------------------------------
@@ -20,12 +20,33 @@ Vectors and matrices are typed in bold  letters (e.g. vector $\v{v}$, matrix $\m
 Variables are only listed with their indices if the index is required for a clear distinction.
 
 \begin{nomenclaturesection*}{Roman upper case}
+  $D$                        & diffusion coefficent                                      &  $\mathrm{m^2~s^{-1}}$\\
+  $Q$                        & flow rate in airway                                       &  $\mathrm{m^3~s^{-1}}$\\
   $Q_\mathrm{t}$             & flow rate in terminal duct-like airway                    &  $\mathrm{m^3~s^{-1}}$\\
+  $R$                        & flow resistance in                                        &  $\mathrm{m^3~s^{-1}}$\\
+  $S_\mathrm{t}$             & cross-section in terminal duct-like airway                &  $\mathrm{m^2}$\\
+  $S_\mathrm{lb}(x,t)$       & cross-section in trumpet lobule                           &  $\mathrm{m^2}$\\
+  $T$                        & flow transmissibility in airway $1/R$                     &  $\mathrm{m^3~s^{-1}}$\\
+  $V_\mathrm{lb}(t)$         & trumpet lobule volume                                     &  $\mathrm{m^3}$\\
+  $V_\mathrm{lb}^0$          & trumpet lobule residual volume                            &  $\mathrm{m^3}$\\
+  $\tilde{V}_\mathrm{lb}(t)$ & trumpet lobule dynamic volume                             &  $\mathrm{m^3}$\\
 \end{nomenclaturesection*}
 
 \begin{nomenclaturesection*}{Roman lower case}
   % Symbol                   & Description                                               & Reference value
+  $c(x,t)$                   & normalized gas concentration                              & $[-]$ \\
+  $d$                        & airway diameter                                           & $\mathrm{m}$ \\
   $d_\mathrm{Lim}$           & limit diameter for duct-like airways                      & $\mathrm{m}$ \\
+  $l$                        & airway length                                             & $\mathrm{m}$ \\
+  $n_1, n_2$                 & lobule geometry power-law exponents                       &  \\
+  $p_i(t)$                   & pressure in airway node $i$                               & $\mathrm{Pa}$ \\
+  $p_1, p_2$                 & lobule geometry power-law coefficients                    &  \\
+  $p_\mathrm{pl}(t)$         & pleural pressure                                          & $\mathrm{Pa}$ \\
+  $r$                        & asymmetry parameter (airway scheme)                       & $[-]$ \\
+  $t$                        & time                                                      & $[s]$ \\
+  $u$                        & flow velocity (average over airway cross-section)         & $[-]$ \\
+  $x$                        & airway streamwise coordinate                              & $[-]$ \\
+  $z$                        & airway generation                                         & $[-]$ \\
 \end{nomenclaturesection*}
 
 % Greek Alphabet:
@@ -34,13 +55,18 @@ Variables are only listed with their indices if the index is required for a clea
 
 \begin{nomenclaturesection*}{Greek upper case}
   % Symbol                  & Description                                               & Reference value
-  $\Phi$                    & particle tracking parameter                               &  \\
 \end{nomenclaturesection*}
 
 
 \begin{nomenclaturesection*}{Greek lower case}
   % Symbol                  & Description                                               & Reference value
-  $\gamma$                  & shape parameter for lobule constitutive law               &  \\
+  $\beta$                   & shape parameter for lobule constitutive law               &  \\
+  $\gamma$                  & non-linearity parameter for lobule constitutive law       &  \\
+  $\phi$                    & modification parameter for lobule compliance              &  \\
+  $\eta$                    & reduction rate (airway scheme)                            &  \\
+  $\kappa$                  & airway dimension ratio                                    &  \\
+  $\tau$                    & modification parameter for lobule resistance              &  \\
+  $\theta$                  & modification parameter for lobule residual size           &  \\
 \end{nomenclaturesection*}
 
 
@@ -48,13 +74,16 @@ Variables are only listed with their indices if the index is required for a clea
   % Symbol                  & Description                                               & Reference value
   $\Rey$                    & Reynolds number                                           &  \\
   $\Wo$                     & Womersley number                                          &  \\
+  $\Pe$                     & Peclet number                                             &  \\
 \end{nomenclaturesection*}
 
 
 \begin{nomenclaturesection*}{Abbreviations}
   % Symbol                  & Description                                               & Reference value
+  FRC                       & functional residual capacity                              &  \\
   MBW                       & multiple-breath washout                                   &  \\
   DTG-SBW                   & double tracer gas single breath washout                   &  \\
+  TSR                       & time-step refinement                                   &  \\
 \end{nomenclaturesection*}
 
 

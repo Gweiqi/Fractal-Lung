@@ -24,9 +24,6 @@ public:
     /// Pointer on system properties
     systemProperties *sysProp;
 
-    /// Pointer on transport properties
-    transportProperties *transProp;
-
     /// Absolut index of trumpet lobule
     int indAbsLob;
 
@@ -111,7 +108,7 @@ public:
     // MEMBER FUNCTIONS
     //**********************************************************/
     /// Constructor of lobule
-    lobule(controlProperties *contProp, systemProperties *sysProp, transportProperties *transProp);
+    lobule(controlProperties *contProp, systemProperties *sysProp);
 
     ~lobule();
 

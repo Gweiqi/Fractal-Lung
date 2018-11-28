@@ -27,9 +27,6 @@ public:
     /// Pointer on system properties
     systemProperties *sysProp;
 
-    /// Pointer on transport properties
-    transportProperties *transProp;
-
     // flag for trumpet lobule scaling
     bool scalingLbL;
 
@@ -260,7 +257,7 @@ public:
     // Member functions
     //**********************************************************/
     /// Constructor
-    lung(controlProperties *contProp, systemProperties *sysProp, transportProperties *transProp);
+    lung(controlProperties *contProp, systemProperties *sysProp);
 
     /// Destructor
     ~lung();
