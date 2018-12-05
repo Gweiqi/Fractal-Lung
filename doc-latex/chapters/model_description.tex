@@ -132,7 +132,7 @@ S_\lb(x,t) = p_1 x^{n_1} + p_2 x^{n_2} + S_\ter\cc
 \end{equation}
 
 with $n_1, n_2 = 16, 2$, where the coefficients $p_1$ and $p_2$ were defined such that the $S_\lb$ intersects with Equation (\ref{eqn:crosssection}) at a chosen generation $z^\star$, and the prescribed initial volume $V_\lb^0$ of the trumpet lobule is obtained for a given length $l_\lb$ of the trumpet lobule.
-The coefficients were thus defined by the following linear system
+The coefficients were thus defined by the following
 
 \begin{figure}[tb!]
   \centering
@@ -560,27 +560,28 @@ The structure is as follows:
 \subsubsection{Model construction \& simulation}
 The driver \texttt{flDriver.cpp} called in \texttt{main.cpp} first constructs (builds) the model according to a parametrized fractal morphology and initializes its member variables.
 After this the simulation time loop is started in which the different (per-time-step) numerical commands are called.
-The structure is as follows:
+In the following the procedure of a simulation run is outlined.
+Thereby $\v{p}(t)$ and $\v{Q}(t)$ refer to vectors containing pressure data at all bifurcation nodes, respectively flow data in all airway units, $\v{c}(t)$ refers to a vector containing all concentration values in all airway units, and $\Gamma$ decribes a list with all model parameters
 \begin{itemize}
   \item Construct lung object (see model architecture in Figure \ref{fig:model_architecture}).
   \item Generate fractal tree of duct-like airways.
   \item Generate / Add trumpet-lobules at the end of each terminal duct.
   \item Pass input data (e.g. flow rate profile, breath period) to lung model.
   \item Read and apply lung modification instructions (e.g. for lobular compliance modification via parameter $\phi$)
-  \item Allocate / Initialize vectors and matrices for ventilation LPM (linear system).
+  \item Allocate / Initialize vectors and matrices for ventilation LPM (use of pressure initial conditions).
   \item Define gridsize.
-  \item Setup gas object.
-  \item Start time loop:
+  \item Setup gas object and initialize (use of concentration initial conditions).
+  \item Start time loop: $t^{n} = t^{0}, t^{1}, t^{2},...,t^\mathrm{end}$
   \begin{itemize}
     \item Re-define breath period if necessary.
     \item Compute TSR.
-    \item Start inner loop (according to TSR):
+    \item Start inner loop (according to TSR): $t^{n,k} = t^{n,0}, t^{n,1}, t^{n,2},...,t^{n,n_\mathrm{tsr}}$
     \begin{itemize}
       \item Write entries in system matrix and right-hand side vector for ventilation LPM.
-      \item Solve for pressure and distribute to nodes in LPM.
-      \item Compute flow rate in each duct-like airway.
+      \item Solve for pressure and distribute to nodes in LPM: $\v{p}(t^{n, k+1}) = f(\v{p}^{n, k}, \v{Q}^{n, k}, \Gamma)$.
+      \item Compute flow rate in each duct-like airway: $\v{Q}(t^{n, k+1}) = f(\v{p}^{n, k+1}, \Gamma)$
       \item Update trumpet-lobule dynamics.
-      \item Successively update concentration in 1D domains (domain decomposition approach).
+      \item Successively update concentration in 1D domains (domain decomposition approach): $\v{c}(t^{n, k+1}) = f(\v{c}^{n, k}, \v{Q}^{n, k+1}, \Gamma)$
     \end{itemize}
     \item Write results of current time step to output data containers.
   \end{itemize}

@@ -7,12 +7,10 @@ Date:   25. 08. 2015
 Topic:  Fractal lung - input generation
 -------------------------------------------------------------
 Description:
-This script reads the flow channel of a B-file from a
-multi-breath washout (MBW). The signal is low-
-pass filtered and cut to a specific length corresponding to
-'nbr' breaths. The processed signal, together with a table of
-tidal volumes and breath periods serves as input for 'fractal
-lung'
+This script generates a Sine-shaped constant flow profile, which
+corresponds to a prescribed tidal volume (TV) and breath period (TB).
+The generated signal, together with a table of
+tidal volumes and breath periods serves as input for the 'flPROG'-application.
 -------------------------------------------------------------
 """
 
@@ -44,7 +42,7 @@ tb = 3.2
 TB = tb*np.ones(nbr)
 
 # tidal volume (m^3)
-tv = 0.0005
+tv = 0.0006
 TV = tv*np.ones(nbr)
 
 # slope of flow profile at zero-crossing

@@ -16,6 +16,5 @@ NxLob 			28		// Number of gridpoints for trumpet lobule
 CFL 			1.0		// CFL number
 
 // Output Settings
-fOutFull		100		// Write frequency full output
 writeFull		0 		// Full data output (1 - yes, 0 - no)
-writeRedGrid	        0		// Full data output on reduced grid (1 - yes, 0 - no)
+fOutFull		100		// Write full output every 'fOutFull' time-step

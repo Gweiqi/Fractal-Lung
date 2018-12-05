@@ -6,44 +6,63 @@ from numpy.random import lognormal
 
 import os
 
-# length of mod-table
+# length of mod-table. This corresponds with the total number of terminal duct / total number of trumpet lobules, and depends on the value set for d_Lim in the constant/systemProperties file. The total number of terminal ducts is prompted to the console/termial when the flPROG application is run.
 N = 304
-abs_ind = np.arange(N)
+aw_ind = np.arange(N) # ID of airway unit
 
-# duct transmissibility mod factor
-duct_trans = np.ones_like(abs_ind)
+#---------------------
+# initialize mod. parameter
+#---------------------
 
-# acinus volume mod factor
-acin_vol = np.ones_like(abs_ind, dtype='f')
+# duct transmissibility mod. parameter
+xi = np.ones_like(aw_ind)
 
-# acinus stretch value (phi)
-#phi = np.ones_like(abs_ind, dtype='f')
-stretch_width = 0.05
-#phi = -2*stretch_width/N*abs_ind + 1 + stretch_width
+# lobule residual volume mod. parameter
+theta = np.ones_like(aw_ind, dtype='f')
 
-mu, sigma = 0.0, 0.4
-phi = lognormal(mu, sigma, N)
+# lobule compliance mod. parameter
+phi = np.ones_like(aw_ind, dtype='f')
 
-# acinus resistance mod factor
-acin_res = np.ones_like(abs_ind, dtype='f')
+# lobule resistance mod. parameter
+tau = np.ones_like(aw_ind, dtype='f')
 
-fac = 1.0 # constant modification factor
-f = 0.2 # fraction of modified values
-for k in abs_ind:
+
+#---------------------
+# change mod. parameter: conctant increase
+#---------------------
+#stretch_width = 0.05
+#phi = -2*stretch_width/N*aw_ind + 1 + stretch_width
+
+#---------------------
+# change mod. parameter: log-normal distribution
+#---------------------
+#mu, sigma = 0.0, 0.4
+#phi = lognormal(mu, sigma, N)
+
+#---------------------
+# change mod. parameter: local, regional
+#---------------------
+mod_param = 1.0 # modification parameter value
+f = 0.25         # fraction of modified airway units
+for k in aw_ind:
+
+    # either grouped (regional modification) ...
+    if k < f*N:
+        phi[k] = mod_param
+
+    if k > (1.-f)*N:
+        phi[k] = 1.+ (1. - mod_param)
+
 
     """
-    # either grouped (lower index side) ...
-    if k < f*N:
-        acin_res[k] *= fac
-
-    # ... or distributed
+    # ... or distributed (local modification)
     if np.mod(k, np.int(1/f)) == 0:
-        acin_res[k] *= fac
+        tau[k] *= mod_param
     """
 
 
 # generate table
-mod_table = np.array([abs_ind, duct_trans, acin_vol, phi, acin_res]).T
+mod_table = np.array([aw_ind, xi, theta, phi, tau]).T
 
 # some plots
 fig = plt.figure()

@@ -11,8 +11,8 @@ This script reads the flow channel of a B-file from a
 multi-breath washout (MBW). The signal is low-
 pass filtered and cut to a specific length corresponding to
 'nbr' breaths. The processed signal, together with a table of
-tidal volumes and breath periods serves as input for 'fractal
-lung'
+tidal volumes and breath periods serves as input for the 'flPROG'
+application.
 -------------------------------------------------------------
 """
 
@@ -31,7 +31,7 @@ from scipy.interpolate import interp1d, UnivariateSpline
 #--------------------
 
 # number of breaths to be analyzed
-nbr = 40
+nbr = 1
 
 # sampling frequency of Bfile
 fs = 200
@@ -40,7 +40,7 @@ fs = 200
 dt = 0.001
 
 # file number
-fnbr = 1;
+fnbr = 2;
 
 #--------------------
 # LOAD DATA
@@ -50,7 +50,7 @@ fnbr = 1;
 cpath = os.getcwd()
 
 # get filelist
-flist = glob.glob(cpath.replace('scripts','data/lufu/Bfiles/*.txt'))
+flist = np.sort(glob.glob(cpath.replace('scripts','data/lufu/B-Files (for input)/*.txt')))
 filename = flist[fnbr-1]
 
 # load data
@@ -85,15 +85,7 @@ N2 = interpolant_N2(time)
 #N2 = np.interp(time, time_raw, N2)
 
 # find start of washout
-fig = plt.figure()
-ax = fig.add_subplot(111)
-ax.plot(time, N2)
-ax.set_xlabel('time $t$ $[s]$')
-ax.set_ylabel('$N_2$')
-plt.show()
-
-print('Enter a time shortly before washout start (respect sampled instances, fs = '+str(fs)+'):' )
-st_estim = input()
+st_estim = min(time[N2 < 0.5*max(N2)]) - 0.5
 st_estim_ind = np.argwhere(time==st_estim)[0,0]
 
 # volume
@@ -123,24 +115,29 @@ volume_c = volume[woa:wob+1]
 volume_c = volume_c - volume_c[0]
 volume_c = volume_c[1:] # start value is not input
 
-# correct flow for zero cumulative volume
+# For signals longer than four breaths, correct flow for zero cumulative volume
 spl = UnivariateSpline(time_c, volume_c)
-volume_c_corr = volume_c - (spl(time_c) - spl(time_c[0]))
+if nbr > 4:
+    volume_c_corr = volume_c - (spl(time_c) - spl(time_c[0]))
 
-N = np.size(time_c)
-flow_c_corr = np.zeros_like(time_c)
-for k in range(N):
+    N = np.size(time_c)
+    flow_c_corr = np.zeros_like(time_c)
+    for k in range(N):
 
-    if k == 0:
-        flow_c_corr[k] = (volume_c_corr[k+1] - volume_c_corr[k])/(dt)
+        if k == 0:
+            flow_c_corr[k] = (volume_c_corr[k+1] - volume_c_corr[k])/(dt)
 
-    elif k == N-1:
-        flow_c_corr[k] = (volume_c_corr[k] - volume_c_corr[k-1])/(dt)
+        elif k == N-1:
+            flow_c_corr[k] = (volume_c_corr[k] - volume_c_corr[k-1])/(dt)
 
-    else:
-        flow_c_corr[k] = (volume_c_corr[k+1] - volume_c_corr[k-1])/(2*dt)
+        else:
+            flow_c_corr[k] = (volume_c_corr[k+1] - volume_c_corr[k-1])/(2*dt)
 
-volume_c_corr2 = cumtrapz(flow_c_corr, time_c, initial=0)
+    volume_c_corr2 = cumtrapz(flow_c_corr, time_c, initial=0)
+else:
+    volume_c_corr2 = volume_c_corr = volume_c
+    flow_c_corr = flow_c
+
 
 # tidal volume
 TV = np.zeros(nbr)

@@ -60,7 +60,6 @@ struct controlProperties{
     int NxLob;             // Number of grid points in trumpet lobules
     int fOutFull;           // Write frequency full output
     bool writeFull;         // Write frequency full output (1 - yes, 0 - no)
-    bool writeRedGrid;      // Full data output on reduced grid (1 - yes, 0 - no)
 };
 
 

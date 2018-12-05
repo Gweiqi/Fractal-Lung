@@ -195,7 +195,7 @@ The total number of airway units which are modified, has to be defined in the sc
 This number should not be higher than the total number of ducts or lobules generated in the model, which on the other hand depends on the values set for $d_\mathrm{lim}$ in the \texttt{systemProperties} file.
 For a specific set of modifications, i.e. which unit is affected (via airway ID), which value is set for the modification parameters (for duct transmissibility $\xi$, for lobule residual volume $\theta$, for lobule compliance $\phi$, or for lobular flow resistance $\tau$), has to be implemented by the user.
 There exists the possibility to define a subset of units which are modified in the same manner, or to define the parameter values using statistical distributions functions.
-After the script has been executed, the table (\texttt{modifyLung}) is stored in the \textit{data} subfolder.
+After the script has been executed, the table (\texttt{modifyLung}) is stored in the \textit{data} sub-folder.
 
 The \texttt{genModifyLung.py} script is used to automatically create a modification parameter table according to specific rules and/or distribution function.
 However, it is also possible to generate or adapted a table by hand, for instance in case only airway units ought to be modified.
@@ -229,33 +229,55 @@ It is therefore usually not needed to run the script nor to make any changes to 
 %****************** new sub-section ********************
 \subsection{Code compilation} \label{ssec:code_compilation}
 The compilation of the C++ source files has to be done on each OS and Computer separately.
+The application which is built during compilation is called \texttt{flPROG}.
 
-In a UNIX environments the make file provided in the \textit{src}-subfolder can be used for comilation
+\subsubsection{Mac \& Linux}
+In a UNIX environments, the make file provided in the \textit{src} sub-folder can be used for comilation
 To this end, simply open a terminal (in the directory containing the source :), and use the command \textit{make}.
 Then use \textit{make moveup} to move the compiled code to its natural habitat (one directory up).
 Optionally, you can clean up the directory with \textit{make clean}.
+Note: To get the needed compiler on Mac, donload Xcode. On Linux, get GCC 4.8.5 or higher.
 
+\subsubsection{Windows}
 On Windows it is recommended to use the Code::Blocks IDE (www.codebloks.org) and integrate the C++ source files in an dedicated project.
+Using Code::Blocks the compiler options have to be set via the toolbar of the IDE.
 
-Note: To get the needed compiler on Mac, donload Xcode. On Linux, get GCC 4.8.5 or higher. Using Code::Blocks the compiler options have to be set via the toolbar of the IDE.
 
 %****************** new sub-section ********************
 \subsection{System and control parameter settings} \label{ssec:parameter_settingss}
-Most of the time, the majority of the system and control parameters hosted in \texttt{systemProperties} and \texttt{controlDict} (\textit{constant} sub-folder) remain constant within a run of multiple simulations, while typically the modification parameters (\texttt{modifyLung}) and/or the flow profile (\texttt{lung}) are altered.
-An exception are the prescribed FRC (both in )
+Most of the time, the majority of the system and control parameters hosted in \texttt{systemProperties} and \texttt{controlDict} (\textit{constant} sub-folder) remain unchanged within a run of multiple simulations, while typically the modification parameters (\texttt{modifyLung}) and/or the flow profile (\texttt{lung}) are altered.
+A possible exception could be the prescribed FRC (in \texttt{systemProperties}), which might be changed more frequently.
 In general, however, system and control parameters should only be changed, if the user is awar of their meaning and implication to the simulation.
-A brief description is provided for each parameter.
+In the corresponding files, a brief description is provided together with the parameter name and the set value.
 
 
 %********************* NEW SECTION *********************
 %-------------------------------------------------------
 \section{Simulation run} \label{sec:simulation_run}
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-\begin{description}
-  \item single run
-  \item simulation batch
-\end{description}
+In order to access the files and tables in the various sub-folders, the model (application \texttt{flPROG}) has to be stored in the same directory as the \textit{constant}, and the \textit{data} sub-folders.
+It is however recommended to use the same folder structure as described in Section \ref{sec:environment}.
+This way, pre-pocessing, simulation run, and post-processing can be performed without copy-pasting files from one place to another.
 
+\subsubsection{Single simulation run}
+The application is executed in Mac/Linux using the \texttt{./} command in the terminal, and in Windows simply by double clicking on the Executable (\textit{.exe} file), i.e. the application.
+Or of course appropriate commands in a Shell or Python script.
+When the simulation starts running, a prompt displays the system and the control variable first (under Windows a console will open).
+Later, at specific time-steps, the absolute and relative errors of the linear system numerical solution (see Section \ref{ssec:ventilation}) is displayed.
+The values of the errors should be $\ll 1$ (i.e. $<1\mathrm{e}-07$).
+The corresponding time is also displayed, showing the progress of the simulation.
+Successful simulation end will be indicated with the word \textit{done} and the total execution time.
+The model output, will be stored as a plain text file called \texttt{primary\_results} (described above in Section \ref{sec:environment}) in the \textit{data} sub-folder.
+Optionally, more detailed simulaton results will be stored in the \textit{data/lobule} or \textit{data/duct} sub-folder.
+
+
+\subsubsection{Batch simulation run}
+For running multiple simulations automatially, e.g. each with different modifications (as defined in each \texttt{modifyLung} file), a short Python-script called \texttt{batch\_run.py} is prepared and stored in the \textit{script} sub-folder.
+This is the only script, which must not be executed from \textit{script}.
+Instead, for a batch simulation, a new folder structure has to be created which contains a separate folder (e.g. called \textit{sim\_1}) for each simulation run and the \texttt{batch\_run.py} is then placed in the.
+Each of this simulation-folders corresponds with the model folder (i.e. the environment ) but with different content e.g. in the \textit{data} or \textit{constant} sub-folders.
+Running the \texttt{batch\_run.py} script will then pass throught the simulation folders and successifely executed each of the model applications stored therin.
+This will run the simulations in series.
+For running parallel simulations, e.g. by running several \texttt{batch\_run.py} scripts at the same time, it should be checked how manx CPUs are available, because for each newly execulted application, a new CPU will be allocated.
 
 
 

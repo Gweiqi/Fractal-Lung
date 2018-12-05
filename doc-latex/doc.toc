@@ -1,48 +1,51 @@
 \select@language {english}
 \contentsline {chapter}{Nomenclature}{iii}{chapter*.2}
-\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
-\contentsline {chapter}{\numberline {2}Model Description}{3}{chapter.2}
-\contentsline {section}{\numberline {2.1}Morphology}{3}{section.2.1}
-\contentsline {section}{\numberline {2.2}Mathematical models}{4}{section.2.2}
-\contentsline {subsection}{\numberline {2.2.1}Ventilation}{4}{subsection.2.2.1}
-\contentsline {subsubsection}{Pressure volume relation in trumpet lobules}{4}{section*.5}
-\contentsline {subsubsection}{Trumpet lobule geometry}{5}{section*.6}
-\contentsline {subsection}{\numberline {2.2.2}Gas transport}{7}{subsection.2.2.2}
-\contentsline {subsubsection}{Modified advection-diffusion equation}{8}{section*.8}
-\contentsline {section}{\numberline {2.3}Model modifications}{9}{section.2.3}
-\contentsline {paragraph}{Lobule Compliance: }{9}{section*.9}
-\contentsline {paragraph}{Lobule Volume: }{10}{section*.10}
-\contentsline {paragraph}{Lobule Resistance: }{10}{section*.11}
-\contentsline {section}{\numberline {2.4}Numerical implementation}{10}{section.2.4}
-\contentsline {subsection}{\numberline {2.4.1}Ventilaton lumped parameter model}{10}{subsection.2.4.1}
-\contentsline {subsubsection}{Duct-like airways}{10}{section*.13}
-\contentsline {subsubsection}{Compliant trumpet lobules}{10}{section*.14}
-\contentsline {subsubsection}{Numerical solution}{11}{section*.16}
-\contentsline {subsection}{\numberline {2.4.2}Gas transport equation}{12}{subsection.2.4.2}
-\contentsline {subsubsection}{Boundary conditions}{14}{section*.17}
-\contentsline {paragraph}{Bifurcation boundary conditions:}{14}{figure.caption.19}
-\contentsline {paragraph}{Inlet boundary conditions:}{15}{section*.20}
-\contentsline {section}{\numberline {2.5}Code structure}{16}{section.2.5}
-\contentsline {subsubsection}{Input / Output}{16}{section*.22}
-\contentsline {subsubsection}{Model construction \& simulation}{16}{section*.23}
-\contentsline {subsubsection}{Model architecture}{17}{section*.24}
-\contentsline {chapter}{\numberline {3}Application}{19}{chapter.3}
-\contentsline {section}{\numberline {3.1}Environment}{19}{section.3.1}
-\contentsline {subsubsection}{The \textit {constant} directory}{20}{section*.26}
-\contentsline {subsubsection}{The \textit {data} directory}{21}{section*.27}
-\contentsline {subsubsection}{The \textit {scripts} directory}{23}{section*.28}
-\contentsline {subsubsection}{The \textit {src} directory}{24}{section*.29}
-\contentsline {section}{\numberline {3.2}Pre-processing}{24}{section.3.2}
-\contentsline {subsubsection}{Flow profile and related quantities}{24}{section*.30}
-\contentsline {subsubsection}{Modification parameters}{25}{section*.31}
-\contentsline {subsubsection}{Pulsatile transmissibility}{25}{section*.33}
-\contentsline {subsection}{\numberline {3.2.1}Code compilation}{26}{subsection.3.2.1}
-\contentsline {subsection}{\numberline {3.2.2}System and control parameter settings}{26}{subsection.3.2.2}
-\contentsline {section}{\numberline {3.3}Simulation run}{26}{section.3.3}
-\contentsline {section}{\numberline {3.4}Post-processing}{26}{section.3.4}
-\contentsline {chapter}{\numberline {A}Appendix A}{27}{appendix.A}
-\contentsline {section}{\numberline {A.1}XYZ}{27}{section.A.1}
-\contentsline {subsection}{\numberline {A.1.1}xyz}{27}{subsection.A.1.1}
-\contentsline {chapter}{List of Figures}{29}{appendix*.34}
-\contentsline {chapter}{List of Tables}{31}{appendix*.35}
-\contentsline {chapter}{Bibliography}{33}{appendix*.36}
+\contentsline {chapter}{\numberline {1}Model Description}{3}{chapter.1}
+\contentsline {section}{\numberline {1.1}Morphology}{3}{section.1.1}
+\contentsline {section}{\numberline {1.2}Mathematical models}{4}{section.1.2}
+\contentsline {subsection}{\numberline {1.2.1}Ventilation}{4}{subsection.1.2.1}
+\contentsline {subsubsection}{Pressure volume relation in trumpet lobules}{4}{section*.6}
+\contentsline {subsubsection}{Trumpet lobule geometry}{5}{section*.7}
+\contentsline {subsection}{\numberline {1.2.2}Gas transport}{7}{subsection.1.2.2}
+\contentsline {subsubsection}{Modified advection-diffusion equation}{8}{section*.9}
+\contentsline {section}{\numberline {1.3}Model modifications}{9}{section.1.3}
+\contentsline {paragraph}{Lobule Compliance: }{9}{section*.10}
+\contentsline {paragraph}{Lobule Volume: }{10}{section*.11}
+\contentsline {paragraph}{Lobule Resistance: }{10}{section*.12}
+\contentsline {section}{\numberline {1.4}Numerical implementation}{10}{section.1.4}
+\contentsline {subsection}{\numberline {1.4.1}Ventilaton lumped parameter model}{10}{subsection.1.4.1}
+\contentsline {subsubsection}{Duct-like airways}{10}{section*.14}
+\contentsline {subsubsection}{Compliant trumpet lobules}{10}{section*.15}
+\contentsline {subsubsection}{Numerical solution}{11}{section*.17}
+\contentsline {subsection}{\numberline {1.4.2}Gas transport equation}{12}{subsection.1.4.2}
+\contentsline {subsubsection}{Boundary conditions}{14}{section*.18}
+\contentsline {paragraph}{Bifurcation boundary conditions:}{14}{figure.caption.20}
+\contentsline {paragraph}{Inlet boundary conditions:}{15}{section*.21}
+\contentsline {section}{\numberline {1.5}Code structure}{16}{section.1.5}
+\contentsline {subsubsection}{Input / Output}{16}{section*.23}
+\contentsline {subsubsection}{Model construction \& simulation}{16}{section*.24}
+\contentsline {subsubsection}{Model architecture}{17}{section*.25}
+\contentsline {chapter}{\numberline {2}Application}{19}{chapter.2}
+\contentsline {section}{\numberline {2.1}Environment}{19}{section.2.1}
+\contentsline {subsubsection}{The \textit {constant} directory}{20}{section*.27}
+\contentsline {subsubsection}{The \textit {data} directory}{21}{section*.28}
+\contentsline {subsubsection}{The \textit {scripts} directory}{23}{section*.29}
+\contentsline {subsubsection}{The \textit {src} directory}{24}{section*.30}
+\contentsline {section}{\numberline {2.2}Pre-processing}{24}{section.2.2}
+\contentsline {subsubsection}{Flow profile and related quantities}{24}{section*.31}
+\contentsline {subsubsection}{Modification parameters}{25}{section*.32}
+\contentsline {subsubsection}{Pulsatile transmissibility}{25}{section*.34}
+\contentsline {subsection}{\numberline {2.2.1}Code compilation}{26}{subsection.2.2.1}
+\contentsline {subsubsection}{Mac \& Linux}{26}{section*.35}
+\contentsline {subsubsection}{Windows}{26}{section*.36}
+\contentsline {subsection}{\numberline {2.2.2}System and control parameter settings}{26}{subsection.2.2.2}
+\contentsline {section}{\numberline {2.3}Simulation run}{26}{section.2.3}
+\contentsline {subsubsection}{Single simulation run}{26}{section*.37}
+\contentsline {subsubsection}{Batch simulation run}{27}{section*.38}
+\contentsline {section}{\numberline {2.4}Post-processing}{27}{section.2.4}
+\contentsline {chapter}{\numberline {A}Appendix A}{29}{appendix.A}
+\contentsline {section}{\numberline {A.1}XYZ}{29}{section.A.1}
+\contentsline {subsection}{\numberline {A.1.1}xyz}{29}{subsection.A.1.1}
+\contentsline {chapter}{List of Figures}{31}{appendix*.39}
+\contentsline {chapter}{List of Tables}{33}{appendix*.40}
+\contentsline {chapter}{Bibliography}{35}{appendix*.41}
