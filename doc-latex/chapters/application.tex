@@ -239,8 +239,8 @@ Optionally, you can clean up the directory with \textit{make clean}.
 Note: To get the needed compiler on Mac, donload Xcode. On Linux, get GCC 4.8.5 or higher.
 
 \subsubsection{Windows}
-On Windows it is recommended to use the Code::Blocks IDE (www.codebloks.org) and integrate the C++ source files in an dedicated project.
-Using Code::Blocks the compiler options have to be set via the toolbar of the IDE.
+On Windows it is recommended to use the Code::Blocks IDE (www.codebloks.org) and integrate the C++ source files in a dedicated project.
+Using Code::Blocks, compiler options can be set via the toolbar of the IDE.
 
 
 %****************** new sub-section ********************
@@ -284,3 +284,24 @@ For running parallel simulations, e.g. by running several \texttt{batch\_run.py}
 %********************* NEW SECTION *********************
 %-------------------------------------------------------
 \section{Post-processing} \label{sec:post_processing}
+Possible ways of post-processing the raw simulation data are quit open and depend on the type of analysis which is planed.
+Two types of output data are at hand:
+The time series for the simulated washout profile and the pleural pressure (\texttt{primary\_results} in \textit{data}), and the unstructured mesh data for different simulation variables, e.g. $c(x,t$, $u(x,t)$, $p(x,t)$, throughout the model (full output, \texttt{VTK} files in \textit{data/duct} and \text{data/lobule} sub-folders).
+Certain basic means for visualization and further processing are provided in the \textit{scripts} sub-folder.
+For instance it is possible to plot the simulated washout profile and pleural pressure, and store these time-series in a B-File (\textit{make\_BFile.py}), which can be further used for regular type MBW data analysis such as calculation of FRC, LCI, $\text{S}_\text{cond}$, $\text{S}_\text{acin}$.
+Regarding the full output, a very powerful tool for visualization and inspection of the mesh-data is the free software \texttt{VisIt} (Lawrence Livermoore National Laboratory).
+Example for Visit scence and plots here.
+
+
+
+
+
+
+
+
+
+
+
+
+
+xxx
