@@ -1318,7 +1318,7 @@ void lung::collectAllOutputDataInTrumpetLobule(duct* parentDuct){
           cout << "ERROR: Concentration in trumpet lobule higher than 1: C(k) = " << parentDuct->pLobule->pSpecies0->C(k) << endl;
         }
 
-        // Radius
+        // Radius (scaling factor 0.1 is for better visibility when displayed in a visualization tool)
         pNodalRadiusLb[fni+k] = 0.1*sqrt(4. * parentDuct->pLobule->pSpecies0->ATr(k)/pi)/2.;
 
         // Velocity
@@ -1418,8 +1418,8 @@ void lung::collectAllOutputData(duct* parentDuct){
           cout << "ERROR: Concentration in duct higher than 1: C(k) = " << parentDuct->pSpecies0->C(k) << endl;
         }
 
-        // Radius
-        pNodalRadiusD[fni+k] = parentDuct->d/2.;
+        // Radius (scaling factor 0.1 is for better visibility when displayed in a visualization tool)
+        pNodalRadiusD[fni+k] = 0.1*parentDuct->d/2.;
 
 
     }
