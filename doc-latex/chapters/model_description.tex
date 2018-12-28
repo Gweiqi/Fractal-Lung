@@ -67,7 +67,7 @@ Here $Q_{ij}$ is the flow rate in direction of the negative pressure gradient, a
 \begin{figure}[tb]
 \centering
 \includegraphics[width=0.5\textwidth]{figures/lumpedparametermodel}
-\caption{Left, Network of duct and trumpet-like elements used for the upper and lower airways, respectively. Right, corresponding lumped parameter model composed of resistances and compliances.}
+\caption{Left, Network of duct and trumpet-like elements used for the upper and lower airways, respectively. Right, corresponding LPM composed of resistances and compliances.}
 \label{fig:lumpedparametermodel}
 \end{figure}
 
@@ -88,15 +88,15 @@ Thus, in each node, the flow rates had to be balanced $\sum Q = 0$, and for the 
   Q_\ter = \frac{\mathrm{d} V_\lb}{\mathrm{d} t}
 \end{equation}
 From these relations, a system of differential algebraic equations (DAE) results.
-Together with appropriate boundary conditions, the DAE system governs the flow distribution in the lumped parameter model.
+Together with appropriate boundary conditions, the DAE system governs the flow distribution in the ventilation LPM.
 
 From a physiological point of view, during inspiration, airflow from the mouth and the nose moves to the alveolar membrane as a result of the motion of the diaphragm and the thoracic cavity, causing a volume increase and a pressure decrease in the pleural cap.
 This negative (relative) pressure in the pleural gap causes a pressure gradient across the peripheral lung tissue and along the airways to the mouth and nose.
-In that sense, obvious boundary conditions for the lumped parameter model (LPM) would be the pleural pressure and the pressure at the mouth. However, pleural pressure data is in general not obtained during clinical routine and therefore not accessible.
+In that sense, obvious boundary conditions for the LPM would be the pleural pressure and the pressure at the mouth. However, pleural pressure data is in general not obtained during clinical routine and therefore not accessible.
 Instead, flow rate data at the mouth can be easily measured by flowmeters (e.g. in the multiple breath washout test).
 Imposing boundary conditions for pressure and flow at the mouth allows solving the DAE with unknown pleural pressure.
 To this end, a spatially uniform pleural pressure is assumed, which varies over time according to the prescribed volume change and the material law of the lung tissue.
-A detailed description of the numerical implementation of the lumped parameter model is provided in Section \ref{ssec:ventilation}.
+A detailed description of the numerical implementation of the LPM is provided in Section \ref{ssec:ventilation}.
 
 
 %****************** new sub-section ********************
@@ -211,7 +211,7 @@ The geometry of the trumpet lobule $S_\lb(x,t)$ (derived in Section \ref{ssec:tr
 
 \subsubsection{Modified advection-diffusion equation} \label{ssec:modified_advection_diffusion_equation}
 The derivation of the transport equation (Equation \ref{eqn:transportEquation}) is different for duct-like and trumpet-like airways in the lung model.
-In the first case, the advection velocity directly results from the solution of the lumped parameter model (LPM, solving for node pressures $p_i$ and $p_j$, and the flow rate $Q_{ij}$ between the nodes $i$ and $j$) and is constant within a duct, $u_{ij} = Q_{ij}/{S_\mathrm{ad}}_{ij}$.
+In the first case, the advection velocity directly results from the solution of the ventilation LPM (solving for node pressures $p_i$ and $p_j$, and the flow rate $Q_{ij}$ between the nodes $i$ and $j$) and is constant within a duct, $u_{ij} = Q_{ij}/{S_\mathrm{ad}}_{ij}$.
 Furthermore, ducts are stiff and hence $S = S_\mathrm{ad} = \text{const}$.
 Omitting the subscripts referring to nodes for briefity, the transport equation for a species concentration $c = c(x,t)$ in a duct-like airway can be written as an advection-diffusion-equation
 \begin{equation} \label{eqn:advectionDiffusionDuct}
@@ -401,7 +401,7 @@ The 1D-advection-diffusion equation governs the evolution of the gas concentrati
 \frac{\partial c}{\partial t} = -\underbrace{u\frac{\partial c}{\partial x}}_{\text{\footnotesize{advection}}} + \underbrace{D\frac{\partial^2 c}{\partial x^2}}_{\text{\footnotesize{diffusion}}}
 \end{equation}
 
-In the lung model the velocity $u$ was computed by means of a lumped parameter (0D) model for the ventilation of all model airway, and the diffusion coefficient $D$, given the properties of both the carrier gas and the inert tracer gas, was computed using Chapman-Enskog equation.
+In the lung model the velocity $u$ was computed by means of a lumped parameter model (LPM) for the ventilation of all model airway, and the diffusion coefficient $D$, given the properties of both the carrier gas and the inert tracer gas, was computed using Chapman-Enskog equation.
 In addition, $D$ was modified to account for Taylor's dispersion (see \cite{Cussler2009}).
 For the discretization of Equation (\ref{eqn:advection_diffusion}) the advection velocity $u$ was assumed to be constant within a duct-like airway.
 Transport phenomena related to spacial velocity gradients at the bifurcations are not considered.

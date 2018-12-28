@@ -1,13 +1,14 @@
 \chapter*{Introduction}\label{cha:Introduction}
-The model introduced here aims for
-\begin{itemize}
-  \item Simulation of MBW
-  \item Simulation of DTG-SBW
-  \item What is the basic model structure (governing equation, boudary conditions)
-  \item Which quantities model variables.
-  \item What are the main model parameters.
-  \item How can the model (parameters) be modified.
-  \item What is the model good for? What is possible with the model? Understanding functional realations, between structural and mechancical properties and variations/modifucations of these, and features of the gas washout profile. Qualitative replication of certain types of disease and conditions. Example modified lobular compliance.
-  \item What is not (yet) possible? Replicating quantitatively all types of disease.
-  \item Overview of the report.
-\end{itemize}
+The lung model introduced here serves the purpose of simulating multiple-breath washout (MBW) and single breath washout (SBW), two lung function test commonly performed in pediatric pneumology \citep{Robinson2013, Singer2013}.
+Inert gas washouts with one tracer gas (e.g. $N_2$-MBW) or two tracer gases ($SF_6$-$He$ double tracer gas SBW) can be simulated.
+
+At the core of the lung model are two solvers: A lumped parameter model (also referred to as 0D model) for the ventilation within the lung, and a 1D network model for gas transport.
+The morphology of the model is defined by a tree-like network of bifurcating airways (mainly for the conducting airways), ending in trumpet-like compliant airway units.
+In mathematical terms, the ventilation solves a linear system for the pressure $p$ in each bifurcation node and in the pleural gap, and in subsequent step solves for the flow rates $Q$ between two nodes, at discrete time steps.
+The 1D model solves an advection-diffusion transport equation for one (or optional two) scalar (normalized) quantity $c$ on 1D grid along all airways units.
+The two solvers are coupled through the flow-rate $Q$ resulting from the ventilation lumped parameter model and which is used to derive the advection velocity $u$ used in the transport equation.
+A set of model parameters, defining the material and structural properties of the lung, are at hand, most of which can be modified through dedicated tables and input files.
+
+The current model serves well to put into relation, structural and mechanical properties and variations/modification of these, with features of the gas washout profile.
+In that sense, effects of certain types of disease and conditions on the lung function can be simulated and analysed in a qualitative manner.
+However, with the current state of the model, it is not possible to simulate all types of airway disease and analyse the their outcomes in an absolute and quantitative manner.
