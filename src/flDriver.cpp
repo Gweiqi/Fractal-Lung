@@ -12,9 +12,9 @@
 #include <fstream>
 #include <stdio.h>
 #include <iomanip>
-#include <eigen_3_3_4/Dense>
-#include <eigen_3_3_4/Sparse>
-#include <eigen_3_3_4/IterativeLinearSolvers>
+#include <eigen/Dense>
+#include <eigen/Sparse>
+#include <eigen/IterativeLinearSolvers>
 
 using namespace std;
 using namespace Eigen;
