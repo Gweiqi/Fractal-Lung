@@ -8,6 +8,7 @@
 #include "IOdict.h"
 #include <streambuf>
 #include <ctime>
+#include <filesystem>
 
 using namespace std;
 
@@ -23,6 +24,20 @@ int main(int argc, char** argv){
     cout << "...start simulation run\n\n";
     cout << "*******************************\n\n\n";
 
+	// Simulation Id for Batch Processing
+	cout << "Have " << argc << " arguments:" << std::endl;
+	for (int i = 0; i < argc; ++i) {
+		std::cout << argv[i] << std::endl;
+	}
+
+	cout << "...simulation id is : " << argv[1] << endl;
+
+	// for debugging perposes, check if the input file exists
+	bool exist = std::filesystem::exists("constant/systemProperties");
+	if (!exist)
+	{
+		filesystem::current_path("../../..");
+	}
 
     // Initialize variables for read in
     //**********************************************************/
