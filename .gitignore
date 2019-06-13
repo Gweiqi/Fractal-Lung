@@ -2,8 +2,4 @@
 *images*/*
 *data*/*
 *.json
-*.exe
-data/inletFlow
-data/inletFlow
-data/nbfs
-data/inletFlow
+*data*\*
