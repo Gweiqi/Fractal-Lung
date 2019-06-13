@@ -30,7 +30,10 @@ int main(int argc, char** argv){
 		std::cout << argv[i] << std::endl;
 	}
 
-	cout << "...simulation id is : " << argv[1] << endl;
+	if (argv[1] !="")
+	{ 
+		// cout << "...simulation id is : " << argv[1] << endl;
+	}
 
 	// for debugging perposes, check if the input file exists
 	bool exist = std::filesystem::exists("constant/systemProperties");

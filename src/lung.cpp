@@ -7,7 +7,8 @@
 #include <random>
 #include <eigen/Dense>
 
-
+#include <filesystem>
+namespace fs = std::filesystem;
 
 // Constructor
 //**************************************************************/
@@ -484,6 +485,7 @@ void lung::computeTimeStepRefinement(duct* parentDuct, int opt){
 
     // compute needed timestep refinement in duct
     Nt_temp = (u * dt)/(contProp->CFL * parentDuct->pSpecies0->h);
+	Nt_temp_Lb = 0.0;
 
     // Anchor
     if (parentDuct->reachedEnd(dLimit)){
@@ -1474,10 +1476,12 @@ void lung::writeFullLungData(duct* parentDuct){
     pAllOutputVariablesD[5] = pNodalRadiusD;
     pAllOutputVariablesD[6] = isModifiedD;
 
-
     char filenameD[100];
-    sprintf(filenameD, "data/duct/TotalLungOutputDuct%05d.vtk", frame);
+	std::string current_path = fs::current_path().string();
+	std::replace(current_path.begin(), current_path.end(), '\\', '/');
+	std::string filepath = current_path + string("/data/duct/TotalLungOutputDuct%05d.vtk");
 
+	sprintf(filenameD, filepath.c_str(), frame);
     write_unstructured_mesh(filenameD, 0, NntotD, pCoordinatesD, NztotD, pZoneTypesD, pConnectivityD, NvarD, pDimVarD, pCenteringD, pVarnamesD, pAllOutputVariablesD);
 
     // Write lobule data
@@ -1491,8 +1495,9 @@ void lung::writeFullLungData(duct* parentDuct){
     pAllOutputVariablesLb[7] = isModifiedLb;
 
     char filenameLb[100];
-    sprintf(filenameLb, "data/lobule/TotalLungOutputLobule%05d.vtk", frame);
+	filepath = current_path + string("/data/lobule/TotalLungOutputLobule%05d.vtk");
 
+	sprintf(filenameLb, filepath.c_str(), frame);
     write_unstructured_mesh(filenameLb, 0, NntotLb, pCoordinatesLb, NztotLb, pZoneTypesLb, pConnectivityLb, NvarLb, pDimVarLb, pCenteringLb, pVarnamesLb, pAllOutputVariablesLb);
     frame += 1;
 }

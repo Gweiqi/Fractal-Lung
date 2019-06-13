@@ -607,6 +607,12 @@ void gas::updateConcentrationInDuct(bool inletTrachea, bool reachedEnd, double d
     bool diffDom;
     double Erel, Eabs;
     double c_Agcl1, c_Agcl2, c_Agcr1, c_Agcr2;
+
+	c_Agcl1 = 0.0; //kam
+	c_Agcl2 = 0.0; // kam
+	c_Agcr1 = 0.0; // kam
+	c_Agcr2 = 0.0; // kam
+
     double c_Dgcl,  c_Dgcr;
     double wQs, wQp, wQmaj, wQmin;
     double wSs, wSp, wSmaj, wSmin;
