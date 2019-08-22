@@ -12,10 +12,10 @@ from scipy.interpolate import interp1d
 write_new_BFile = False
 
 # file number: (only important if an existing B-File is used as template)
-fnbr = 2
+fnbr = 1
 
 # header
-BFile_header = 'Time Flow_BTPS O2 CO2 N2 MMss SampleFlow MMms DelayO2 DelayMMss'
+BFile_header = 'Time Flow_BTPS O2 CO2 N2 MMss SampleFlow MMms DelayO2 DelayMMss (SPW_V3.2.1;Pre=0;Post=0)'
 
 # nominal magnitude for results BF-File
 Q_nominal     =  1e03
@@ -65,7 +65,7 @@ if write_new_BFile:
     N2_pp = np.ones([1,N1])
     time_pp = time[:N1]
 
-    time_wo_st = TB1
+    time_wo_start = TB1
 
 else:
     # read from existing B-File and shorten
@@ -74,9 +74,13 @@ else:
 
     # load data
     data = np.genfromtxt(filename, skip_header=1)
-    t    = data[:,0]*1e-03
+    t  = data[:,0]*1e-03
     flow = data[:,1]*1e-03
     N2   = data[:,4]/N2_nominal
+
+    #t    = time;
+    #flow = Q;
+    #N2   = sp1;
 
     # resample to simulation time resolution
     t_BF = np.copy(t)
@@ -104,6 +108,7 @@ else:
     time_pp = t[mask_pp]
     Q_pp  = flow[mask_pp]
     flow = data[:,1]*1e-03
+    #flow = Q;
     N2_pp = N2[mask_pp]
 
 time_ppl = time+time_wo_start

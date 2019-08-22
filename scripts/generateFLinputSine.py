@@ -32,7 +32,7 @@ from scipy.optimize import minimize
 #--------------------
 
 # number of breaths to be analyzed
-nbr = 5
+nbr = 10
 
 # time-step (seconds) => inverse of sampling frequency of 'InletFlow'
 dt = 0.001
