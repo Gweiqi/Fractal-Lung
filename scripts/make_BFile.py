@@ -7,7 +7,7 @@ from matplotlib import cm
 from scipy.interpolate import interp1d
 
 # choose type:
-# Use 'True' if a generic (e.g. sine function) flow profile was used for the simulation. Us
+# Use 'True' if a generic (e.g. sine function) flow profile was used for the simulation. 
 # Use 'False' if the flow profile was read from an exisiting B-File
 write_new_BFile = False
 
@@ -78,13 +78,11 @@ else:
     flow = data[:,1]*1e-03
     N2   = data[:,4]/N2_nominal
 
-    #t    = time;
-    #flow = Q;
-    #N2   = sp1;
-
     # resample to simulation time resolution
     t_BF = np.copy(t)
     t = np.arange(t_BF[0], t_BF[-1], 1./nbfs_data[1])
+
+    print(t_BF[-1])
 
     interpolant_flow = interp1d(t_BF, flow, kind='quadratic')
     flow = interpolant_flow(t)
@@ -142,7 +140,7 @@ else:
     dMMss_BF = data[:,9][:time_BF.size]
 
 # save B-File
-output = np.array([time_BF, Q_BF, O2_BF, CO2_BF, N2_BF, MMss_BF, Qss_BF, MMms_BF, dO2_BF, dMMss_BF]).T;
+output = np.array([time_BF, Q_BF, O2_BF, CO2_BF, N2_BF, MMss_BF, Qss_BF, MMms_BF, dO2_BF, dMMss_BF]).T
 filename = 'B-results.txt'
 np.savetxt(data_path+'/lufu/B-Files (results)/'+filename, output, fmt=['%d', '%.8f', '%.5f', '%.5f', '%.5f', '%.5f', '%.8f', '%.5f', '%.5f', '%.5f'], header=BFile_header, comments='', delimiter=' ')
 

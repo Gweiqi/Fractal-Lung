@@ -43,7 +43,6 @@ for d in dlist:
     il = np.genfromtxt(cwd+'/'+d+'/constant/systemProperties', comments='//')
     FRC.append(il[0,1]*1e03) # in liter
 
-
 T  = np.array(T)
 C  = np.array(C)
 IF = np.array(IF)
@@ -51,7 +50,7 @@ TB = np.array(TB)
 FRC = np.array(FRC)
 
 # mask for end-exp. concentration
-end_exp_t = 10; # time substraction for end-exp. concentration
+end_exp_t = 10 # time substraction for end-exp. concentration
 M = []
 for tb, t in zip(TB, T):
     mask = np.zeros_like(t).astype(np.bool)
@@ -66,36 +65,56 @@ M = np.array(M)
 
 # volume, cumulative expired volume, turn over
 CEV = []
+FRC_F = []
 VOL = []
 TO = []
-for t, iF, frc in zip(T, IF, FRC):
+
+for t, c, iF, frc in zip(T, C, IF, FRC):
 
     vol = cumtrapz(iF, t, initial=0)
     VOL.append(vol)
 
     exp_flow = iF.copy()
     exp_flow[iF>0] = 0.
-    cev = cumtrapz(-exp_flow, t, initial=0)*1e03 # in liter
-    cev_N = cumtrapz(-exp_flow * C, t, initial=0)*1e03  # in liter
-    CEV.append(cev)
 
+    cev = cumtrapz(-exp_flow, t, initial=0)*1e03 # in liter
+    frc_f = cumtrapz(-exp_flow * c, t, initial=0)*1e03  # in liter
+
+    CEV.append(cev)
+    FRC_F.append(frc_f)
     TO.append(cev/frc)
 
 VOL = np.array(VOL)
 CEV = np.array(CEV)
+FRC_F = np.array(FRC_F)
 TO  = np.array(TO)
 
-FRC_F = cev_N
+print('initial FRC = ' + str(FRC))
+print('actual FRC = ' + str (FRC_F))
 
+# plot - FRC
+lw = 0.7; step = 5000; k = 0
+fig = plt.figure(figsize=(8, 5))
+ax = fig.add_subplot(111)
+
+for t, f in zip(T, FRC_F):
+    plt.text(t[-1], f[-1], round(FRC[k],2), {'fontsize': 8, 'ha': 'center', 'va': 'center'})
+    plt.text(t[-1]-20, f[-1], round(f[-1],2), {'fontsize': 8, 'ha': 'center', 'va': 'center'})
+    ax.plot(t[::step], f[::step], lw=lw, color=cm.jet(k*100), linewidth=2, label=f[-1])
+    k += 1
+
+ax.set_xlabel('time')
+ax.set_ylabel('FRC')
+plt.savefig('FRC_vs_time.pdf')
+plt.show()
 
 # lung clearance index (LCI)
 threshold = 0.025
 for t, tb, c, cev, m, frc in zip(T, TB, C, CEV, M, FRC):
     end_exp_c = c[m]
     LCI_ind = -1
-    for k in range(tb.size-2):
+    for k in range(tb.size-3):
         eec    = end_exp_c[k]
-
         if (eec < threshold):
             LCI_ind = k
             break
@@ -103,10 +122,13 @@ for t, tb, c, cev, m, frc in zip(T, TB, C, CEV, M, FRC):
     if LCI_ind > 0:
         LCI_time = np.cumsum(tb)[LCI_ind] # in seconds
         LCI = cev[t > LCI_time - 1e-03*end_exp_t].min()/frc
-        print('LCI = '+str(LCI))
+        LCI_F = cev[t > LCI_time - 1e-03*end_exp_t].min()/max(frc_f)
+        # print('LCI = '+str(LCI))
     else:
         print('Threshold concentration for LCI calculation not reached in given washout.')
 
+print('initial LCI = ' + str(LCI))
+print('actual LCI = ' + str(LCI_F))
 
 # slope phase III
 def S_III(cev, cN2, bounds):
@@ -147,8 +169,6 @@ for t, tb, c, cev in zip(T, TB, C, CEV):
 SIII = np.array(SIII)
 P = np.array(P)
 
-
-
 # Scond, Sacin
 Scond = []
 Sacin = []
@@ -163,11 +183,8 @@ for to, sIII, m in zip(TO, SIII, M):
     Scond.append(s_cond)
     Sacin.append(s_acin)
 
-
-
 # plot - LCI
 fig = plt.figure(figsize=(8, 5))
-lw = 0.7
 L = ['$\sigma=0.1$','$\sigma=0.2$','$\sigma=0.4$']
 #L = ['$\hat\sigma=0.05$','$\hat\sigma=0.25$','$\hat\sigma=0.5$']
 
@@ -184,7 +201,6 @@ ax.set_ylabel('$N_2$   $c/c_{max}$')
 plt.legend(fontsize=8)
 
 plt.savefig('phi_global_LN_LCI.pdf')
-
 
 # plot - Scond
 fig = plt.figure(figsize=(8, 5))
@@ -209,7 +225,6 @@ plt.legend(fontsize=8)
 
 plt.savefig('phi_global_LN_SIII.pdf')
 
-
 # plot - LCI
 fig = plt.figure(figsize=(8, 5))
 lw = 0.7
@@ -231,5 +246,4 @@ ax.set_ylabel('${S_n}_{III}$')
 plt.legend(fontsize=8)
 
 plt.savefig('phi_global_LN_Scond.pdf')
-
 plt.show()
