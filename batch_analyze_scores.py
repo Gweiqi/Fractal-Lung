@@ -98,9 +98,9 @@ fig = plt.figure(figsize=(8, 5))
 ax = fig.add_subplot(111)
 
 for t, f in zip(T, FRC_F):
-    plt.text(t[-1], f[-1], round(FRC[k],2), {'fontsize': 8, 'ha': 'center', 'va': 'center'})
-    plt.text(t[-1]-20, f[-1], round(f[-1],2), {'fontsize': 8, 'ha': 'center', 'va': 'center'})
-    ax.plot(t[::step], f[::step], lw=lw, color=cm.jet(k*100), linewidth=2, label=f[-1])
+    plt.text(t[-1], 0.2+f[-1], round(FRC[k],1), {'fontsize': 10, 'ha': 'center', 'va': 'center'})
+    plt.text(t[-1]-15, 0.2+f[-1], round(f[-1],1), {'fontsize': 10, 'ha': 'center', 'va': 'center'})
+    ax.plot(t[::step], f[::step], lw=lw, color='g', linewidth=1.5, label=f[-1])
     k += 1
 
 ax.set_xlabel('time')
