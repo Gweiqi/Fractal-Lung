@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <vector>
-#include <eigen_3_3_4/Dense>
+#include <eigen/Dense>
 
 using namespace std;
 using namespace Eigen;

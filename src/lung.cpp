@@ -5,7 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <random>
-#include <eigen_3_3_4/Dense>
+#include <eigen/Dense>
 
 
 

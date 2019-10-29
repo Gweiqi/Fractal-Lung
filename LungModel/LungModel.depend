@@ -1,0 +1,112 @@
+# depslib dependency file v1.0
+1562764959 source:c:\projects\model\fractallung\src\duct.cpp
+	"duct.h"
+	<iostream>
+	<cmath>
+	<stdio.h>
+
+1562764959 c:\projects\model\fractallung\src\duct.h
+	"lobule.h"
+	"gas.h"
+	"dataStruct.h"
+	<iostream>
+	<cmath>
+
+1572279029 c:\projects\model\fractallung\src\lobule.h
+	"gas.h"
+	"dataStruct.h"
+	<cmath>
+	<iostream>
+
+1572279073 c:\projects\model\fractallung\src\gas.h
+	<iostream>
+	<cmath>
+	<eigen/Dense>
+	<eigen/Sparse>
+	<eigen/IterativeLinearSolvers>
+	"dataStruct.h"
+
+1572279029 c:\projects\model\fractallung\src\datastruct.h
+	<fstream>
+	<vector>
+	<iostream>
+
+1572279029 source:c:\projects\model\fractallung\src\gas.cpp
+	"gas.h"
+	<cmath>
+	<iostream>
+	<fstream>
+
+1562764959 source:c:\projects\model\fractallung\src\iodict.cpp
+	"IOdict.h"
+	<iostream>
+	<cstdlib>
+	<cmath>
+	<vector>
+	<fstream>
+	<stdio.h>
+	<iomanip>
+
+1572279087 c:\projects\model\fractallung\src\iodict.h
+	<iostream>
+	<vector>
+	<eigen/Dense>
+
+1572279029 source:c:\projects\model\fractallung\src\main.cpp
+	<iostream>
+	<fstream>
+	<iomanip>
+	"flDriver.h"
+	"dataStruct.h"
+	"IOdict.h"
+	<streambuf>
+	<ctime>
+
+1562764959 c:\projects\model\fractallung\src\fldriver.h
+	<fstream>
+	<iostream>
+	"dataStruct.h"
+
+1572279114 source:c:\projects\model\fractallung\src\fldriver.cpp
+	"flDriver.h"
+	"lung.h"
+	"duct.h"
+	"lobule.h"
+	"gas.h"
+	"IOdict.h"
+	"dataStruct.h"
+	<iostream>
+	<cstdlib>
+	<cmath>
+	<fstream>
+	<stdio.h>
+	<iomanip>
+	<eigen/Dense>
+	<eigen/Sparse>
+	<eigen/IterativeLinearSolvers>
+
+1572279102 c:\projects\model\fractallung\src\lung.h
+	"flDriver.h"
+	"duct.h"
+	"lobule.h"
+	"gas.h"
+	"IOdict.h"
+	"visit_writer.h"
+	<iostream>
+	<eigen/Dense>
+
+1562764959 c:\projects\model\fractallung\src\visit_writer.h
+
+1562764959 source:c:\projects\model\fractallung\src\visit_writer.cpp
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"visit_writer.h"
+
+1562764959 source:c:\projects\model\fractallung\src\lobule.cpp
+	"lobule.h"
+	<iostream>
+	<cmath>
+	<random>
+	<chrono>
+

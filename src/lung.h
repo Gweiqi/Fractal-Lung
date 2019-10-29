@@ -9,7 +9,7 @@
 #include "visit_writer.h"
 
 #include <iostream>
-#include <eigen_3_3_4/Dense>
+#include <eigen/Dense>
 
 using namespace std;
 using namespace Eigen;
