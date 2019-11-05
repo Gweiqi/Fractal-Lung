@@ -60,7 +60,7 @@ def generateFInputSine(number_of_breaths, time_step, breath_period, tidal_volume
       ax.plot(time, flow, 'k')
       ax.set_ylabel('flow rate at inlet $Q_\mathrm{in}(t)$ $[m^3/s]$')
       ax.grid('on')
-      plt.show()
+      # plt.show()
 
       #--------------------
       # SAVE
@@ -213,9 +213,9 @@ def sensitivity_function() :
       save_path = data_path.replace('data', 'images')
       plt.savefig(save_path + '/results_' 
                             + str(variable_name) 
-                            + str(_) 
+                            + '_'
                             + str(grouped_or_distributed) 
-                            + str(_) 
+                            + '_'
                             + str(compensated_or_noncompensated) 
                             + '.pdf')
 
@@ -234,23 +234,26 @@ print ('data path is :', data_path)
 print ('Number of arguments:', len(sys.argv), 'arguments.')
 print ('Argument List:', str(sys.argv))
 
-nbr = int(sys.argv[1])
+nbr = 1 # int(sys.argv[1])
 print ('number of breath : ', nbr)
 
-grouped_or_distributed = sys.argv[2]
-print ('grouped or distributed : ', grouped_or_distributed)
+grouped_or_distributed_range = ['grouped', 'distributed'] # sys.argv[2]
+# print ('grouped or distributed : ', grouped_or_distributed)
 
-compensated_or_noncompensated = sys.argv[3]
-print ('compensated or noncompensated : ', compensated_or_noncompensated)
+compensated_or_noncompensated_range = ['compensated', 'noncompensated'] # sys.argv[3]
+# print ('compensated or noncompensated : ', compensated_or_noncompensated)
  
-lung_impairment = float(sys.argv[4])
-print ('lung_impairment : ', lung_impairment)
+lung_impairment_range = [0.25, 0.5, 1.0] # float(sys.argv[4])
+# print ('lung_impairment : ', lung_impairment)
 
-variable_name = sys.argv[5]
-print ('variable name : ', variable_name)
+variable_name_range = ['xi', 'phi', 'tau', 'theta'] # sys.argv[5]
+# print ('variable name : ', variable_name)
 
-variable_values = sys.argv[6:]
-print ('variable values : ', variable_values)
+variable_values_range = [[0.1, 0.5, 1.0],
+                         [0.5, 1.0, 1.5], 
+                         [1, 5, 10],
+                         [0.5, 1.0, 1.5]] # sys.argv[6:]
+# print ('variable values : ', variable_values)
 
 # length of mod-table. 
 # This corresponds with the total number of terminal duct / total number of trumpet lobules, 
@@ -273,4 +276,9 @@ tv = 0.0005
 generateFInputSine(nbr, dt, tb, tv)
 
 # run sensitivity function 
-sensitivity_function()
+for grouped_or_distributed in grouped_or_distributed_range:
+      for compensated_or_noncompensated in compensated_or_noncompensated_range:
+            for lung_impairment in lung_impairment_range:
+                  for variable_name in variable_name_range:
+                        for variable_values in variable_values_range:
+                              sensitivity_function()

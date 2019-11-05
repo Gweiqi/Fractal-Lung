@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["1", "grouped", "compensated", "0.25", "xi", "0.1", "0.5", "1.0"]
+            "args": ["1", "grouped", "compensated", "0.25", "xi", "0.1"]
             //"args": ["nbr", "grouped_or_distributed", "compensated_or_noncompensated", "lung_impairment", "variable_name", "variable_values"]
         }
     ]
