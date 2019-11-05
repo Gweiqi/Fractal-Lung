@@ -234,7 +234,7 @@ print ('data path is :', data_path)
 print ('Number of arguments:', len(sys.argv), 'arguments.')
 print ('Argument List:', str(sys.argv))
 
-nbr = 1 # int(sys.argv[1])
+nbr = 50 # int(sys.argv[1])
 print ('number of breath : ', nbr)
 
 grouped_or_distributed_range = ['grouped', 'distributed'] # sys.argv[2]
@@ -276,8 +276,10 @@ tv = 0.0005
 generateFInputSine(nbr, dt, tb, tv)
 
 # run sensitivity function 
+itr = 0;
 for variable_name in variable_name_range:
-      variable_values = variable_values_range[]
+      variable_values = variable_values_range[itr]
+      itr = itr + 1;
       for lung_impairment in lung_impairment_range:
             for compensated_or_noncompensated in compensated_or_noncompensated_range:
                   for grouped_or_distributed in grouped_or_distributed_range:
