@@ -1,2 +1,22 @@
 
 *.pdf
+*.o
+*.layout
+*.tlog
+*.ilk
+*.pdb
+*.exe
+*.exp
+*.vcxproj
+*.depend
+*.sln
+solutions/vs2019/LungModel(Cuda)/.vs/LungModel(Cuda)/v16/.suo
+*.db
+*.ipch
+*.cu
+*.user
+*.cache
+*.log
+*.lib
+*.deps
+*.obj

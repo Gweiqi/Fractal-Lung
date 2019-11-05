@@ -1,5 +1,5 @@
 // Lung capacity (residual lung volume)
-FRC			0.0024		// Functional residual capacity FRC (in m^3) used for scaling of the lung
+FRC			0.002		// Functional residual capacity FRC (in m^3) used for scaling of the lung
 
 // Fluid parameters
 p0			101325		// Ambient pressure at mouth (in Pa)
