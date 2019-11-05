@@ -276,9 +276,9 @@ tv = 0.0005
 generateFInputSine(nbr, dt, tb, tv)
 
 # run sensitivity function 
-for grouped_or_distributed in grouped_or_distributed_range:
-      for compensated_or_noncompensated in compensated_or_noncompensated_range:
-            for lung_impairment in lung_impairment_range:
-                  for variable_name in variable_name_range:
-                        for variable_values in variable_values_range:
-                              sensitivity_function()
+for variable_name in variable_name_range:
+      variable_values = variable_values_range[]
+      for lung_impairment in lung_impairment_range:
+            for compensated_or_noncompensated in compensated_or_noncompensated_range:
+                  for grouped_or_distributed in grouped_or_distributed_range:
+                        sensitivity_function()
