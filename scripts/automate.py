@@ -93,15 +93,15 @@ def sensitivity_function() :
 
       # define colors for each line plot
       number_of_colors = len(variable_values) + 1
-      color = ["#"+''.join([random.choice('0123456789ABCDEF') for j in range(6)])
-             for i in range(number_of_colors)]
+      # color = ["#"+''.join([random.choice('0123456789ABCDEF') for j in range(6)])
+      #       for i in range(number_of_colors)]
+      color = ['r', 'b', 'g']
 
       # for loop over the range of values
       for x_val in variable_values:
 
             x_val = float(x_val)
-            color_index = color_index + 1
-
+            
             var = np.ones_like(aw_ind, dtype='f')
 
             #---------------------
@@ -190,18 +190,21 @@ def sensitivity_function() :
             print ('--> Adding to plot for : ', variable_name, x_val)
             ax_1.plot(time, sp1, color=color[color_index], lw=lw, label = str(variable_name) + ' ' + str(x_val))   
             ax_2.plot(time, ppl, color=color[color_index], lw=lw, label = str(variable_name) + ' ' + str(x_val))
-            
-            print ('--> Copying Primary Results :', variable_name, x_val, grouped_or_distributed, compensated_or_noncompensated)
+            color_index = color_index + 1
+
+            print ('--> Copying Primary Results :', variable_name, x_val, grouped_or_distributed, compensated_or_noncompensated, )
 
             shutil.copyfile(data_path + '/primary_results', data_path 
-                                                            + '/primary_results_' 
+                                                            + '/primary_results_varname-' 
                                                             + str(variable_name) 
-                                                            + '_' 
+                                                            + '_varvalue-' 
                                                             + str(x_val) 
                                                             + '_'
                                                             + str(grouped_or_distributed) 
                                                             + '_'
                                                             + str(compensated_or_noncompensated) 
+                                                            + '_lungfraction-'
+                                                            + str(lung_impairment) 
                                                             + '.txt')           
       
       # show the final plot 
@@ -211,12 +214,14 @@ def sensitivity_function() :
 
       # save
       save_path = data_path.replace('data', 'images')
-      plt.savefig(save_path + '/results_' 
+      plt.savefig(save_path + '/results_varname-' 
                             + str(variable_name) 
                             + '_'
                             + str(grouped_or_distributed) 
                             + '_'
                             + str(compensated_or_noncompensated) 
+                            + '_lungfraction-'
+                            + str(lung_impairment) 
                             + '.pdf')
 
 # main function call
@@ -234,27 +239,17 @@ print ('data path is :', data_path)
 print ('Number of arguments:', len(sys.argv), 'arguments.')
 print ('Argument List:', str(sys.argv))
 
-nbr = 50 # int(sys.argv[1])
+nbr = 1 
 print ('number of breath : ', nbr)
 
-grouped_or_distributed_range = ['grouped', 'distributed'] # sys.argv[2]
-# print ('grouped or distributed : ', grouped_or_distributed)
-
-compensated_or_noncompensated_range = ['compensated', 'noncompensated'] # sys.argv[3]
-# print ('compensated or noncompensated : ', compensated_or_noncompensated)
- 
-lung_impairment_range = [0.25, 0.5, 1.0] # float(sys.argv[4])
-# print ('lung_impairment : ', lung_impairment)
-
-variable_name_range = ['xi', 'phi', 'tau', 'theta'] # sys.argv[5]
-# print ('variable name : ', variable_name)
-
+grouped_or_distributed_range = ['grouped', 'distributed']
+compensated_or_noncompensated_range = ['compensated', 'noncompensated']
+lung_impairment_range = [0.25, 0.5, 1.0]
+variable_name_range = ['xi', 'phi', 'tau', 'theta'] 
 variable_values_range = [[0.1, 0.5, 1.0],
                          [0.5, 1.0, 1.5], 
                          [1, 5, 10],
-                         [0.5, 1.0, 1.5]] # sys.argv[6:]
-# print ('variable values : ', variable_values)
-
+                         [0.5, 1.0, 1.5]] 
 # length of mod-table. 
 # This corresponds with the total number of terminal duct / total number of trumpet lobules, 
 # and depends on the value set for d_Lim in the constant/systemProperties file. 
@@ -276,11 +271,13 @@ tv = 0.0005
 generateFInputSine(nbr, dt, tb, tv)
 
 # run sensitivity function 
-itr = 0;
-for variable_name in variable_name_range:
-      variable_values = variable_values_range[itr]
-      itr = itr + 1;
-      for lung_impairment in lung_impairment_range:
-            for compensated_or_noncompensated in compensated_or_noncompensated_range:
-                  for grouped_or_distributed in grouped_or_distributed_range:
-                        sensitivity_function()
+selected_variable = 2
+
+variable_name = variable_name_range[selected_variable]
+variable_values = variable_values_range[selected_variable]
+for lung_impairment in lung_impairment_range:
+      print ('--------------------------------------------------')
+      for compensated_or_noncompensated in compensated_or_noncompensated_range:
+            print ('--------------------------------------------------')
+            for grouped_or_distributed in grouped_or_distributed_range:
+                  sensitivity_function()
