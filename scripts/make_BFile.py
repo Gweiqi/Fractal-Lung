@@ -70,7 +70,7 @@ if write_new_BFile:
 else:
     # read from existing B-File and shorten
     flist = np.sort(glob.glob(data_path+'/lufu/B-Files (for input)/*.txt'))
-    filename = flist[fnbr-1]
+    filename = flist[fnbr]
 
     # load data
     data = np.genfromtxt(filename, skip_header=1)
